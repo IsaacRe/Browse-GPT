@@ -1,0 +1,19 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+selenium = "*"
+notebook = "*"
+numpy = "*"
+undetected-chromedriver = "*"
+matplotlib = "*"
+lxml = "*"
+networkx = "*"
+tqdm = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"
