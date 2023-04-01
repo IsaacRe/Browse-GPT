@@ -5,12 +5,12 @@ from bs4 import BeautifulSoup
 from browse_gpt.config import ParsePageConfig
 from browse_gpt.browser.chromedriver import start_driver
 from browse_gpt.cache.util import (
-    save_to_path,
+    save_to_cache,
+    get_parse_config_id,
     PAGE_CONTENT_FILENAME,
     PARSED_CONTEXT_FILENAME,
     INSERT_IDX_IDENTIFIER,
     ANNOTATE_IDX_IDENTIFIER,
-    CLOSE_ANNOTATE_IDX_IDENTIFIER,
     EXTRACTED_CONTENT_GROUP_SUBDIR,
     ElementReference,
 )
@@ -22,7 +22,7 @@ def main(config: ParsePageConfig):
     driver.get(config.url)
 
     # save full HTML
-    save_to_path(
+    save_to_cache(
         content=driver.page_source,
         page_id=config.site_id,
         session_id=config.session_id,
@@ -50,8 +50,8 @@ def main(config: ParsePageConfig):
     annotated_text = "\n".join(annotated_text)
 
     # save parsed context
-    parse_config_id = f"{config.min_class_overlap}co_{config.min_num_matches}nm"
-    save_to_path(
+    parse_config_id = get_parse_config_id(min_class_overlap=config.min_class_overlap, min_num_matches=config.min_num_matches)
+    save_to_cache(
         content=annotated_text,
         filename=PARSED_CONTEXT_FILENAME,
         session_id=config.session_id,
@@ -68,7 +68,7 @@ def main(config: ParsePageConfig):
             annotated_text += [ANNOTATE_IDX_IDENTIFIER.format(ref), format_text_newline(e.soup.get_text())]
         annotated_text = "\n".join(annotated_text)
 
-        save_to_path(
+        save_to_cache(
             content=annotated_text,
             filename=f"{i}.txt",
             session_id=config.session_id,
@@ -82,36 +82,3 @@ def main(config: ParsePageConfig):
 
 if __name__ == "__main__":
     sys.exit(main(ParsePageConfig.parse_args()))
-
-    import os
-    from cache.util import load_from_path, get_load_path, get_workdir, PAGE_CONTENT_FILENAME
-    from browser.chromedriver import start_driver
-
-    workdir = get_workdir()
-    test_content = load_from_path(
-        page_id="fandango.com",
-        session_id="fandango",
-        cache_dir="example",
-        filename=PAGE_CONTENT_FILENAME,
-    )
-    test_content_path = get_load_path(
-        page_id="fandango.com",
-        session_id="fandango",
-        cache_dir="example",
-        filename=PAGE_CONTENT_FILENAME,
-    )
-    root_elem = BeautifulSoup(test_content).find()
-    driver = start_driver()
-    driver.get(f"file://{os.path.join(workdir, test_content_path)}")
-    text_list, elems, elem_groups = recurse_get_context(driver=driver, ds=root_elem)
-    print("\n".join(text_list))
-
-    # check text context of same group elements
-    for i, g in enumerate(elem_groups):
-        print(f"Group {i} -----")
-        for e in g.elems[:2]:
-            print(e.soup.get_text())
-            print("-----")
-
-    # verify functionality of group context insertion
-    assert len(text_list) == len(elems)

@@ -24,7 +24,7 @@ def complete_chat(context: List["OpenAIChatMessage"], openai_model: str = OPENAI
 
 
 def single_response(message: str, openai_model: str = OPENAI_DEFAULT_CHAT_MODEL):
-    return complete_chat(context=[OpenAIChatMessage(content=message)], openai_model=openai_model)
+    return complete_chat(context=[OpenAIChatMessage(content=message)], openai_model=openai_model).content
 
 
 class OpenAIChatMessageRole(Enum):

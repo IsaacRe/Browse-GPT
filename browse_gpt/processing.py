@@ -149,7 +149,6 @@ def extract_and_format_context(s: Tag, attrs: List[str] = ['aria-label', 'placeh
     return context.strip()
 
 
-# TODO return DecoratedSoup elements list to get xpath for later reference
 def recurse_get_context(
     driver: Chrome,
     ds: "DecoratedSoup",
@@ -226,17 +225,11 @@ class DecoratedSoupGroup(DecoratedSoup):
 
 def _test():
     import os
-    from cache.util import load_from_path, get_load_path, get_workdir, PAGE_CONTENT_FILENAME
+    from cache.util import load_from_cache, get_load_path, get_workdir, PAGE_CONTENT_FILENAME
     from browser.chromedriver import start_driver
 
     workdir = get_workdir()
-    test_content = load_from_path(
-        page_id="fandango.com",
-        session_id="fandango",
-        cache_dir="example",
-        filename=PAGE_CONTENT_FILENAME,
-    )
-    test_content_path = get_load_path(
+    test_content, test_content_path = load_from_cache(
         page_id="fandango.com",
         session_id="fandango",
         cache_dir="example",
