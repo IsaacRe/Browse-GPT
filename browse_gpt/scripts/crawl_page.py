@@ -14,7 +14,7 @@ from browse_gpt.cache.util import (
     EXTRACTED_CONTENT_GROUP_SUBDIR,
     ElementReference,
 )
-from browse_gpt.processing import recurse_get_context, format_text_newline
+from browse_gpt.processing import recurse_get_context, format_text_newline, get_decorated_elem, DecoratedSoupGroup
 
 
 def main(config: ParsePageConfig):
@@ -32,22 +32,21 @@ def main(config: ParsePageConfig):
 
     # parse page for LLM context
     root_elem = BeautifulSoup(driver.page_source).find()
-    text_list, elems, elem_groups = recurse_get_context(driver=driver, s=root_elem)
+    ds = get_decorated_elem(driver=driver, soup=root_elem, parent_xpath="/", tag=root_elem.name, tag_index=0)
+    text_list, elems, elem_groups = recurse_get_context(driver=driver, ds=ds)
 
     # insert element idx annotations and same-class group insert identifiers
     group_idx = 0
-    element_idx = 0
     annotated_text = []
-    for t, e in zip(text_list, elems):
-        if t:
-            #ref = ElementReference(idx=element_idx, xpath=e.xpath) TODO annotate with xpath as well
-            annotated_text += [ANNOTATE_IDX_IDENTIFIER.format(element_idx), t]
-            element_idx += 1
-        else:
-            if element_idx:
-                annotated_text += [CLOSE_ANNOTATE_IDX_IDENTIFIER.format(element_idx - 1)]
-            annotated_text += [INSERT_IDX_IDENTIFIER.format(group_idx)]
+    for element_idx, (t, e) in enumerate(zip(text_list, elems)):
+        if isinstance(e, DecoratedSoupGroup):
+            ref = ElementReference(idx=element_idx, xpath=e.group_xpath).to_str()
+            annotated_text += [ANNOTATE_IDX_IDENTIFIER.format(ref), INSERT_IDX_IDENTIFIER.format(group_idx)]
             group_idx += 1
+        else:
+            ref = ElementReference(idx=element_idx, xpath=e.xpath).to_str()
+            annotated_text += [ANNOTATE_IDX_IDENTIFIER.format(ref), t]
+            
     annotated_text = "\n".join(annotated_text)
 
     # save parsed context
@@ -65,7 +64,8 @@ def main(config: ParsePageConfig):
     for i, g in enumerate(elem_groups):
         annotated_text = []
         for j, e in enumerate(g.elems):
-            annotated_text += [ANNOTATE_IDX_IDENTIFIER.format(j), format_text_newline(e.soup.get_text())]
+            ref = ElementReference(idx=j, xpath=e.xpath).to_str()
+            annotated_text += [ANNOTATE_IDX_IDENTIFIER.format(ref), format_text_newline(e.soup.get_text())]
         annotated_text = "\n".join(annotated_text)
 
         save_to_path(
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     root_elem = BeautifulSoup(test_content).find()
     driver = start_driver()
     driver.get(f"file://{os.path.join(workdir, test_content_path)}")
-    text_list, elems, elem_groups = recurse_get_context(driver=driver, s=root_elem)
+    text_list, elems, elem_groups = recurse_get_context(driver=driver, ds=root_elem)
     print("\n".join(text_list))
 
     # check text context of same group elements

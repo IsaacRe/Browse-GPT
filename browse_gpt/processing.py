@@ -150,10 +150,15 @@ def extract_and_format_context(s: Tag, attrs: List[str] = ['aria-label', 'placeh
 
 
 # TODO return DecoratedSoup elements list to get xpath for later reference
-def recurse_get_context(driver: Chrome, s: Tag, attrs: List[str] = ['aria-label', 'placeholder'], xpath: str = '/html'):
-    context = extract_and_format_context(s, attrs=attrs)
+def recurse_get_context(
+    driver: Chrome,
+    ds: "DecoratedSoup",
+    attrs: List[str] = ['aria-label', 'placeholder'],
+    xpath: str = '/html',
+) -> Tuple[List[str], List["DecoratedSoup"], List[List["DecoratedSoup"]]]:
+    context = extract_and_format_context(ds.soup, attrs=attrs)
     if context:
-        return [context], [s], []
+        return [context], [ds], []
     descendent_context = []
     class_sets = []
     ds_elems = []
@@ -161,7 +166,7 @@ def recurse_get_context(driver: Chrome, s: Tag, attrs: List[str] = ['aria-label'
     elem_groups: List[List[DecoratedSoup]] = []
     live_children = []
     tag_idxs = {}
-    for c in s.children:
+    for c in ds.soup.children:
         if not isinstance(c, NavigableString):
             if c.name not in tag_idxs:
                 tag_idxs[c.name] = 0
@@ -177,7 +182,7 @@ def recurse_get_context(driver: Chrome, s: Tag, attrs: List[str] = ['aria-label'
     if len(live_children) > 1:
         # check for same-class groups
         elem_groups, _, _ = group_sections_by_class_overlap(live_children, class_sets)
-        logger.debug(s.name)
+        logger.debug(ds.soup.name)
         logger.debug([len(g) for g in elem_groups])
     elif len(live_children) > 0:
         elem_groups = [live_children]
@@ -186,7 +191,7 @@ def recurse_get_context(driver: Chrome, s: Tag, attrs: List[str] = ['aria-label'
         dc, *_ = g
         if len(g) == 1:
             logger.debug(f'recursing to {str(dc.soup)[:30]}')
-            context, elems, elem_groups_ = recurse_get_context(driver=driver, s=dc.soup, xpath=dc.xpath)
+            context, elems, elem_groups_ = recurse_get_context(driver=driver, ds=dc, xpath=dc.xpath)
             descendent_context += context
             ds_elems += elems
             ds_elem_groups += elem_groups_
@@ -196,7 +201,7 @@ def recurse_get_context(driver: Chrome, s: Tag, attrs: List[str] = ['aria-label'
             ds_elem_groups += [soup_group]
             ds_elems += [soup_group]
             
-    logger.debug(f'found groups for {s.name}: {[len(g) for g in elem_groups]}')
+    logger.debug(f'found groups for {ds.soup.name}: {[len(g) for g in elem_groups]}')
 
     return descendent_context, ds_elems, ds_elem_groups
 
@@ -216,6 +221,7 @@ class DecoratedSoupGroup(DecoratedSoup):
     def __init__(self, elems: List[DecoratedSoup]):
         self.elems = list(elems)
         super().__init__(self.elems[0], self.elems[0].xpath, self.elems[0].driver_elem)
+        self.group_xpath = "/".join(self.xpath.split("/")[:-1])
 
 
 def _test():
@@ -239,7 +245,7 @@ def _test():
     root_elem = BeautifulSoup(test_content).find()
     driver = start_driver()
     driver.get(f"file://{os.path.join(workdir, test_content_path)}")
-    text_list, elems, elem_groups = recurse_get_context(driver=driver, s=root_elem)
+    text_list, elems, elem_groups = recurse_get_context(driver=driver, ds=root_elem)
     print("\n".join(text_list))
 
     # check text context of same group elements

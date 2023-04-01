@@ -1,9 +1,9 @@
-%<0%>
+%<0:/html/body[1]/main[1]/section[2]/div[1]/div[1]/div[1]/ul[1]/li[1]%>
 Exclusive Clip: 'A Thousand And One'
 Teyana Taylor is riveting in this festival favorite
-%<1%>
+%<1:/html/body[1]/main[1]/section[2]/div[1]/div[1]/div[1]/ul[1]/li[2]%>
 'Dungeons & Dragons: Honor Among Thieves'
 Tickets are on sale now - watch our exclusive conversation with the cast!
-%<2%>
+%<2:/html/body[1]/main[1]/section[2]/div[1]/div[1]/div[1]/ul[1]/li[3]%>
 Extended Preview: 'Creed III'
 The Michael B. Jordan hit comes home to Vudu

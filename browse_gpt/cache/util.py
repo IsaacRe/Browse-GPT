@@ -52,5 +52,5 @@ class ElementReference:
     idx: int
     xpath: str
 
-    def __str__(self):
+    def to_str(self):
         return f"{self.idx}:{self.xpath}"
