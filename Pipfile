@@ -12,6 +12,7 @@ matplotlib = "*"
 lxml = "*"
 networkx = "*"
 tqdm = "*"
+openai = "*"
 
 [dev-packages]
 

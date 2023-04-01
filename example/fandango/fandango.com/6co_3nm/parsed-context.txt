@@ -1,0 +1,149 @@
+%<0%>
+Gift Cards
+%<1%>
+Offers
+%<2%>
+Screen Reader Users:
+To optimize your experience with your screen reading software,
+please use our Flixster.com website,
+which has the same tickets as our Fandango.com and MovieTickets.com websites.
+%<3%>
+Skip to Main Content
+%<4%>
+aria-label: Search by city, state, zip or movie
+placeholder: Search by city, state, zip or movie
+%<5%>
+Go
+%<6%>
+Movies
+%<7%>
+Theaters
+%<8%>
+Movie News
+%<9%>
+Sign In/Join
+%<10%>
+Offers
+%<11%>
+Go to previous offer
+%<12%>
+Kids Go Free to LEGOLAND®
+%<13%>
+Receive Promo Link with any ticket purchase
+%<14%>
+Go to next offer
+%<15%>
+aria-label: Go to slide 1
+%<16%>
+aria-label: Go to slide 2
+%<17%>
+aria-label: Go to slide 3
+%<18%>
+aria-label: Go to slide 4
+%<19%>
+Movie Tickets and Times
+%<20%>
+Buy Movie Tickets
+%<21%>
+See All Movies
+%</21%>
+%[0%]
+%<22%>
+Go to more films
+%<23%>
+Features
+%</23%>
+%[1%]
+%<24%>
+Go to next featured item
+%<25%>
+Offers
+%</25%>
+%[2%]
+%<26%>
+New & Coming soon
+%<27%>
+Dungeons & Dragons: Honor Among Thieves (2023)
+%<28%>
+The Super Mario Bros. Movie (2023)
+%<29%>
+John Wick: Chapter 4 (2023)
+%<30%>
+Creed III (2023)
+%<31%>
+Ant-Man and the Wasp: Quantumania (2023)
+%<32%>
+Shazam! Fury of the Gods (2023)
+%<33%>
+Fast X (2023)
+%<34%>
+Scream VI (2023)
+%<35%>
+Experience + Explore
+%<36%>
+Movies In Theaters
+%<37%>
+Movie Actors and Actresses
+%<38%>
+Mobile
+%<39%>
+New For Streaming
+%<40%>
+Special Offers
+%<41%>
+Gift Cards
+%<42%>
+Editorial Features
+%<43%>
+Awards Watch
+%<44%>
+Indie Movie Guide
+%<45%>
+Family Guide
+%<46%>
+House Of Screams
+%<47%>
+Movie News
+%<48%>
+Videos
+%<49%>
+Movie Trailers
+%<50%>
+Weekly Ticket
+%<51%>
+Mom's Movie Minute
+%<52%>
+Photos
+%<53%>
+Red Carpet Premieres
+%<54%>
+March Celebrity Birthdays
+%<55%>
+Award Show Galleries
+%<56%>
+Follow Us
+%<57%>
+Fandango on Facebook
+%<58%>
+Fandango on Twitter
+%<59%>
+Fandango on Instagram
+%<60%>
+Fandango on Youtube
+%<61%>
+Get Updates On All Things Movies
+%<62%>
+Privacy Policy
+%<63%>
+aria-label: Enter Email Address
+placeholder: Enter Email Address
+%<64%>
+aria-label: Submit
+%<65%>
+Get Fandango Apps
+%<66%>
+Fandango iOS App
+%<67%>
+Fandango Android App
+%<68%>
+© 2023 Fandango
