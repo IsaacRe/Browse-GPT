@@ -3,8 +3,10 @@ from argparse import ArgumentParser, _ArgumentGroup
 from dataclasses import dataclass, fields, asdict
 from typing import ClassVar, Any, List
 
-from .processing import MIN_CLASS_OVERLAP, MIN_NUM_MATCHES
+from .logging import setup_logger, LOG_LEVELS
 
+MIN_CLASS_OVERLAP = 6  # test cases so far min=5, max=28
+MIN_NUM_MATCHES = 3
 
 _PARSER = ArgumentParser()
 
@@ -59,9 +61,13 @@ class ConfigBase:
 
 @dataclass
 class CommonConfig(ConfigBase):
+    log_level: make_arg("--log-level", type=str, choices=list(LOG_LEVELS), default="info")
     url: make_arg("--url", type=str)
     session_id: make_arg("--session-id", type=str, default="1")
     cache_dir: make_arg("--cache-dir", type=str, default=".cache")
+
+    def post_init(cls, log_level: str, **_: Any):
+        setup_logger(log_level)
 
 
 @dataclass
@@ -70,7 +76,8 @@ class CrawlPageConfig(CommonConfig):
 
     site_id: make_arg("--site-id", type=str, default="")
 
-    def post_init(self, url: str, **_):
+    def post_init(self, url: str, **kwargs):
+        super().post_init(**kwargs)
         if not self.site_id:
             self.site_id = url.split('//')[1].replace('/', '|')
 
@@ -81,6 +88,20 @@ class ParsePageConfig(CrawlPageConfig):
 
     min_class_overlap: make_arg("--min-class-overlap", type=int, default=MIN_CLASS_OVERLAP)
     min_num_matches: make_arg("--min-num-matches", type=int, default=MIN_NUM_MATCHES)
+
+
+@dataclass
+class TaskExecutionConfig(ParsePageConfig):
+    _args: ClassVar[_ArgumentGroup] = _PARSER.add_argument_group()
+
+    llm_site_id: make_arg("--llm-site-id", type=str, default="")
+    task_description: make_arg("--task-description", type=str)
+
+    def post_init(self, llm_site_id: str, **kwargs):
+        super().post_init(**kwargs)
+        # set identifier used in LLM interface to site_id if not explicitly set
+        if not llm_site_id:
+            self.llm_site_id = self.site_id
 
 
 @dataclass

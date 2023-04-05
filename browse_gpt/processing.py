@@ -8,8 +8,7 @@ import numpy as np
 from typing import List, Set, Tuple, Dict
 import logging
 
-MIN_CLASS_OVERLAP = 6  # test cases so far min=5, max=28
-MIN_NUM_MATCHES = 3
+from .config import MIN_CLASS_OVERLAP, MIN_NUM_MATCHES
 
 logger = logging.getLogger(__name__)
 
@@ -225,7 +224,7 @@ class DecoratedSoupGroup(DecoratedSoup):
 
 def _test():
     import os
-    from cache.util import load_from_cache, get_load_path, get_workdir, PAGE_CONTENT_FILENAME
+    from cache.util import load_from_cache, get_load_path, get_workdir, PAGE_HTML_FILENAME
     from browser.chromedriver import start_driver
 
     workdir = get_workdir()
@@ -233,7 +232,7 @@ def _test():
         page_id="fandango.com",
         session_id="fandango",
         cache_dir="example",
-        filename=PAGE_CONTENT_FILENAME,
+        filename=PAGE_HTML_FILENAME,
     )
     root_elem = BeautifulSoup(test_content).find()
     driver = start_driver()

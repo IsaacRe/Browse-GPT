@@ -7,7 +7,7 @@ from browse_gpt.browser.chromedriver import start_driver
 from browse_gpt.cache.util import (
     save_to_cache,
     get_parse_config_id,
-    PAGE_CONTENT_FILENAME,
+    PAGE_HTML_FILENAME,
     PARSED_CONTEXT_FILENAME,
     INSERT_IDX_IDENTIFIER,
     ANNOTATE_IDX_IDENTIFIER,
@@ -27,7 +27,7 @@ def main(config: ParsePageConfig):
         page_id=config.site_id,
         session_id=config.session_id,
         cache_dir=config.cache_dir,
-        filename=PAGE_CONTENT_FILENAME,
+        filename=PAGE_HTML_FILENAME,
     )
 
     # parse page for LLM context
