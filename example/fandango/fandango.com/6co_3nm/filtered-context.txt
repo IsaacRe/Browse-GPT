@@ -1,2 +1,0 @@
-20:Click "Buy Movie Tickets"
-35:Click on "Shazam! Fury of the Gods (2023)" to view showtimes and purchase tickets

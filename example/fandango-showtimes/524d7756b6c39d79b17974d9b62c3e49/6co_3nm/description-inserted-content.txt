@@ -1,0 +1,183 @@
+%<0:/html/body[1]/div[3]/div[1]/div[1]/div[1]/div[1]/iframe[1]%>
+aria-label: Advertisement
+%<1:/html/body[1]/div[4]/div[1]/div[1]/span[1]/a[1]%>
+Gift Cards
+%<2:/html/body[1]/div[4]/div[1]/div[1]/span[1]/a[2]%>
+Offers
+%<3:/html/body[1]/div[4]/div[2]/header[1]/nav[1]/ul[1]/li[1]/a[1]/span[1]%>
+Screen Reader Users:
+To optimize your experience with your screen reading software,
+please use our Flixster.com website,
+which has the same tickets as our Fandango.com and MovieTickets.com websites.
+%<4:/html/body[1]/div[4]/div[2]/header[1]/nav[1]/ul[1]/li[2]/a[1]%>
+Skip to Main Content
+%<5:/html/body[1]/div[4]/div[2]/header[1]/nav[1]/ul[1]/li[2]/form[1]/div[1]/div[1]/input[1]%>
+aria-label: Search by city, state, zip or movie
+placeholder: Search by city, state, zip or movie
+%<6:/html/body[1]/div[4]/div[2]/header[1]/nav[1]/ul[1]/li[2]/form[1]/div[1]/button[1]/span[1]/span[1]%>
+Go
+%<7:/html/body[1]/div[4]/div[2]/header[1]/nav[1]/ul[2]/li[1]/a[1]/span[1]%>
+Movies
+%<8:/html/body[1]/div[4]/div[2]/header[1]/nav[1]/ul[2]/li[2]/a[1]/span[1]%>
+Theaters
+%<9:/html/body[1]/div[4]/div[2]/header[1]/nav[1]/ul[2]/li[3]/a[1]/span[1]%>
+Movie News
+%<10:/html/body[1]/div[4]/div[2]/header[1]/nav[1]/ul[2]/li[4]/a[1]/span[1]%>
+Sign In/Join
+%<11:/html/body[1]/div[5]/h2[1]%>
+Offers
+%<12:/html/body[1]/div[5]/div[1]/div[1]/button[1]/span[1]%>
+Go to previous offer
+%<13:/html/body[1]/div[5]/div[1]/div[1]/ul[1]/li[3]/button[1]/span[2]/strong[1]%>
+Kids Go Free to LEGOLAND®
+%<14:/html/body[1]/div[5]/div[1]/div[1]/ul[1]/li[3]/button[1]/span[2]/span[1]%>
+Receive Promo Link with any ticket purchase
+%<15:/html/body[1]/div[5]/div[1]/div[1]/button[2]/span[1]%>
+Go to next offer
+%<16:/html/body[1]/div[5]/div[1]/ul[1]/li[1]/button[1]%>
+aria-label: Go to slide 1
+%<17:/html/body[1]/div[5]/div[1]/ul[1]/li[2]/button[1]%>
+aria-label: Go to slide 2
+%<18:/html/body[1]/main[1]/div[1]/div[1]/section[1]%>
+aria-label: Movie Summary
+%<19:/html/body[1]/main[1]/div[1]/div[1]/section[7]/div[1]/h2[1]%>
+Featured News
+%<20:/html/body[1]/main[1]/div[1]/div[1]/section[7]/div[1]/div[1]/div[1]/button[2]%>
+aria-label: Next slide
+%<21:/html/body[1]/main[1]/div[1]/div[1]/section[7]/div[1]/div[1]/div[2]/ul[1]/li[1]/a[1]/figure[1]/figcaption[1]%>
+What Is 'Shazam! Fury Of The Gods' About?
+%<22:/html/body[1]/main[1]/div[1]/div[1]/section[7]/div[1]/div[1]/div[2]/ul[1]/li[2]/a[1]/figure[1]/figcaption[1]%>
+The Cast of ‘Shazam! Fury of the Gods’ on the ‘Shazamily’ and the Future of the Franchise
+%<23:/html/body[1]/main[1]/div[1]/div[1]/section[7]/div[1]/div[1]/div[2]/ul[1]/li[3]/a[1]/figure[1]/figcaption[1]%>
+'Shazam! Fury Of The Gods' Los Angeles Premiere
+%<24:/html/body[1]/main[1]/div[1]/div[1]/h2[1]%>
+Details for In Theaters
+%<25:/html/body[1]/main[1]/div[1]/div[1]/h2[2]%>
+Calendar for movie times.
+is selected.
+%<26:/html/body[1]/main[1]/div[1]/div[1]/a[1]%>
+Skip to Movie and Times
+%<27:/html/body[1]/main[1]/div[1]/div[1]/section[2]/h2[1]%>
+Movie Times Calendar
+%<28:/html/body[1]/main[1]/div[1]/div[1]/section[2]/div[1]/div[1]/div[1]/ul[1]/li[1]/button[1]/span[1]%>
+Thursday, April 6, selected day
+%<29:/html/body[1]/main[1]/div[1]/div[1]/section[2]/div[1]/div[1]/div[1]/ul[1]/li[1]/button[1]/strong[1]%>
+Thu
+%<30:/html/body[1]/main[1]/div[1]/div[1]/section[2]/div[1]/div[1]/div[1]/ul[1]/li[1]/button[1]/span[2]%>
+Apr
+%<31:/html/body[1]/main[1]/div[1]/div[1]/section[2]/div[1]/div[1]/div[1]/ul[1]/li[1]/button[1]/span[3]%>
+06
+%<32:/html/body[1]/main[1]/div[1]/div[1]/section[2]/div[1]/div[1]/div[1]/ul[1]%>
+select a specific date in April.
+%<33:/html/body[1]/main[1]/div[1]/div[1]/h2[3]%>
+Filter movie times by screen format.
+is selected.
+%<34:/html/body[1]/main[1]/div[1]/div[1]/section[3]/section[1]/p[1]%>
+Theaters near
+%<35:/html/body[1]/main[1]/div[1]/div[1]/section[3]/section[1]/button[1]%>
+aria-label: Theaters near 31527
+%<36:/html/body[1]/main[1]/div[1]/div[1]/section[4]/section[1]%>
+select a nearby movie theater with desired amenities and showtimes.
+%<37:/html/body[1]/main[1]/div[1]/div[1]/section[5]/div[1]/div[1]/div[1]/div[1]%>
+Stream Shazam! Fury of the Gods (2023) on your favorite device with Vudu.
+%<38:/html/body[1]/main[1]/div[1]/div[1]/section[5]/div[1]/div[1]/div[1]/a[1]%>
+Watch On Demand
+%<39:/html/body[1]/main[1]/div[1]/div[1]/section[5]/div[1]/div[1]/div[1]/a[2]%>
+More movies & TV shows
+%<40:/html/body[1]/main[1]/div[1]/div[1]/section[5]/section[1]/div[1]/div[2]/h3[1]%>
+How To Watch On Demand
+%<41:/html/body[1]/main[1]/div[1]/div[1]/section[5]/section[1]/div[1]/div[2]/p[1]%>
+Stream over 150,000 Movies & TV Shows on your smart TV, tablet, phone, or gaming console with Vudu. No subscription required.
+%<42:/html/body[1]/main[1]/div[1]/div[2]/div[1]/div[1]/div[1]/div[1]/iframe[1]%>
+aria-label: Advertisement
+%<43:/html/body[1]/footer[1]/section[1]/h2[1]%>
+Offers
+%<44:/html/body[1]/footer[1]/section[1]/ul[1]%>
+select which special offer or promotion to take advantage of when purchasing a movie or event ticket through Fandango.
+%<45:/html/body[1]/footer[1]/section[2]/div[1]/h2[1]%>
+New & Coming soon
+%<46:/html/body[1]/footer[1]/section[2]/div[1]/ul[1]/li[1]/a[1]/p[1]%>
+Guardians of the Galaxy Vol. 3 (2023)
+%<47:/html/body[1]/footer[1]/section[2]/div[1]/ul[1]/li[2]/a[1]/p[1]%>
+The Super Mario Bros. Movie (2023)
+%<48:/html/body[1]/footer[1]/section[2]/div[1]/ul[1]/li[3]/a[1]/p[1]%>
+Dungeons & Dragons: Honor Among Thieves (2023)
+%<49:/html/body[1]/footer[1]/section[2]/div[1]/ul[1]/li[4]/a[1]/p[1]%>
+John Wick: Chapter 4 (2023)
+%<50:/html/body[1]/footer[1]/section[2]/div[1]/ul[1]/li[5]/a[1]/p[1]%>
+Creed III (2023)
+%<51:/html/body[1]/footer[1]/section[2]/div[1]/ul[1]/li[6]/a[1]/p[1]%>
+Shazam! Fury of the Gods (2023)
+%<52:/html/body[1]/footer[1]/section[2]/div[1]/ul[1]/li[7]/a[1]/p[1]%>
+Fast X (2023)
+%<53:/html/body[1]/footer[1]/section[2]/div[1]/ul[1]/li[8]/a[1]/p[1]%>
+Scream VI (2023)
+%<54:/html/body[1]/footer[1]/nav[1]/div[1]/div[1]/h3[1]%>
+Experience + Explore
+%<55:/html/body[1]/footer[1]/nav[1]/div[1]/div[1]/ul[1]/li[1]/a[1]%>
+Movies In Theaters
+%<56:/html/body[1]/footer[1]/nav[1]/div[1]/div[1]/ul[1]/li[2]/a[1]%>
+Movie Actors and Actresses
+%<57:/html/body[1]/footer[1]/nav[1]/div[1]/div[1]/ul[1]/li[3]/a[1]%>
+Mobile
+%<58:/html/body[1]/footer[1]/nav[1]/div[1]/div[1]/ul[1]/li[4]/a[1]%>
+New For Streaming
+%<59:/html/body[1]/footer[1]/nav[1]/div[1]/div[1]/ul[1]/li[5]/a[1]%>
+Special Offers
+%<60:/html/body[1]/footer[1]/nav[1]/div[1]/div[1]/ul[1]/li[6]/a[1]%>
+Gift Cards
+%<61:/html/body[1]/footer[1]/nav[1]/div[1]/div[2]/h3[1]%>
+Editorial Features
+%<62:/html/body[1]/footer[1]/nav[1]/div[1]/div[2]/ul[1]/li[1]/a[1]%>
+Awards Watch
+%<63:/html/body[1]/footer[1]/nav[1]/div[1]/div[2]/ul[1]/li[2]/a[1]%>
+Indie Movie Guide
+%<64:/html/body[1]/footer[1]/nav[1]/div[1]/div[2]/ul[1]/li[3]/a[1]%>
+Family Guide
+%<65:/html/body[1]/footer[1]/nav[1]/div[1]/div[2]/ul[1]/li[4]/a[1]%>
+House Of Screams
+%<66:/html/body[1]/footer[1]/nav[1]/div[1]/div[2]/ul[1]/li[5]/a[1]%>
+Movie News
+%<67:/html/body[1]/footer[1]/nav[1]/div[1]/div[3]/h3[1]%>
+Videos
+%<68:/html/body[1]/footer[1]/nav[1]/div[1]/div[3]/ul[1]/li[1]/a[1]%>
+Movie Trailers
+%<69:/html/body[1]/footer[1]/nav[1]/div[1]/div[3]/ul[1]/li[2]/a[1]%>
+Weekly Ticket
+%<70:/html/body[1]/footer[1]/nav[1]/div[1]/div[3]/ul[1]/li[3]/a[1]%>
+Mom's Movie Minute
+%<71:/html/body[1]/footer[1]/nav[1]/div[1]/div[4]/h3[1]%>
+Photos
+%<72:/html/body[1]/footer[1]/nav[1]/div[1]/div[4]/ul[1]/li[1]/a[1]%>
+Red Carpet Premieres
+%<73:/html/body[1]/footer[1]/nav[1]/div[1]/div[4]/ul[1]/li[2]/a[1]%>
+April Celebrity Birthdays
+%<74:/html/body[1]/footer[1]/nav[1]/div[1]/div[4]/ul[1]/li[3]/a[1]%>
+Award Show Galleries
+%<75:/html/body[1]/footer[1]/section[3]/div[1]/h3[1]%>
+Follow Us
+%<76:/html/body[1]/footer[1]/section[3]/div[1]/ul[1]/li[1]/a[1]%>
+Fandango on Facebook
+%<77:/html/body[1]/footer[1]/section[3]/div[1]/ul[1]/li[2]/a[1]%>
+Fandango on Twitter
+%<78:/html/body[1]/footer[1]/section[3]/div[1]/ul[1]/li[3]/a[1]%>
+Fandango on Instagram
+%<79:/html/body[1]/footer[1]/section[3]/div[1]/ul[1]/li[4]/a[1]%>
+Fandango on Youtube
+%<80:/html/body[1]/footer[1]/section[3]/div[2]/h3[1]%>
+Get Updates On All Things Movies
+%<81:/html/body[1]/footer[1]/section[3]/div[2]/a[1]%>
+Privacy Policy
+%<82:/html/body[1]/footer[1]/section[3]/div[2]/form[1]/div[1]/input[1]%>
+aria-label: Enter Email Address
+placeholder: Enter Email Address
+%<83:/html/body[1]/footer[1]/section[3]/div[2]/form[1]/div[1]/input[2]%>
+aria-label: Submit
+%<84:/html/body[1]/footer[1]/section[3]/div[3]/h3[1]%>
+Get Fandango Apps
+%<85:/html/body[1]/footer[1]/section[3]/div[3]/div[1]/a[1]%>
+Fandango iOS App
+%<86:/html/body[1]/footer[1]/section[3]/div[3]/div[1]/a[2]%>
+Fandango Android App
+%<87:/html/body[1]/footer[1]/section[4]/div[1]%>
+© 2023 Fandango

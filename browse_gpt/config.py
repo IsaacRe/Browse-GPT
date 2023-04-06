@@ -2,6 +2,7 @@ import sys
 from argparse import ArgumentParser, _ArgumentGroup
 from dataclasses import dataclass, fields, asdict
 from typing import ClassVar, Any, List
+from hashlib import md5
 
 from .logging import setup_logger, LOG_LEVELS
 
@@ -79,7 +80,7 @@ class CrawlPageConfig(CommonConfig):
     def post_init(self, url: str, **kwargs):
         super().post_init(**kwargs)
         if not self.site_id:
-            self.site_id = url.split('//')[1].replace('/', '|')
+            self.site_id = md5(url.split("//")[1].encode("utf-8")).hexdigest()
 
 
 @dataclass

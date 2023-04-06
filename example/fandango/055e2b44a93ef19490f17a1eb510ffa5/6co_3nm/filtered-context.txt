@@ -1,0 +1,2 @@
+19:click on "Movie Tickets and Times" to search for showtimes and buy tickets
+35:click on "Shazam! Fury of the Gods (2023)" to view showtimes and buy tickets

@@ -1,0 +1,3 @@
+2:purchase tickets for various movies and receive additional perks or discounts.
+1:select which of the three exclusive video clips to view.
+0:choose which upcoming movie release date to view.

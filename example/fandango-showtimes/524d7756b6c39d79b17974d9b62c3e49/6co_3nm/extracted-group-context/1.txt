@@ -1,0 +1,46 @@
+%<0:/html/body[1]/main[1]/div[1]/div[1]/section[4]/section[1]/div[1]%>
+Island Cinemas 7
+Add to favorite theaters
+7.48 mi
+44 Cinema Lane, Saint Simons Island, GA 31522
+Standard
+See amenities
+Reserved seating
+No passes
+Closed caption
+Accessibility devices available
+7:00p
+%<1:/html/body[1]/main[1]/div[1]/div[1]/section[4]/section[1]/div[2]%>
+Glynn Place Stadium Cinemas 14
+Add to favorite theaters
+10.30 mi
+551 Mall Blvd., Brunswick, GA 31525
+Standard
+See amenities
+Reserved seating
+Closed caption
+Accessibility devices available
+3:00p
+%<2:/html/body[1]/main[1]/div[1]/div[1]/section[4]/section[1]/div[3]%>
+Kings Bay Stadium Cinemas 9
+Add to favorite theaters
+23.79 mi
+201 City Smitty Dr, St Marys, GA 31558
+Standard
+See amenities
+Closed caption
+Accessibility devices available
+12:30p
+3:30p
+6:30p
+9:30p
+%<3:/html/body[1]/main[1]/div[1]/div[1]/section[4]/section[1]/div[4]%>
+AMC CLASSIC Yulee 10
+Add to favorite theaters
+32.46 mi
+96012 Lofton Square, Yulee, FL 32097
+Standard
+See amenities
+Closed caption
+Accessibility devices available
+8:15p

@@ -132,9 +132,12 @@ class Context:
         self.annotated_text = annotated_text
         self.raw_text = ANNOTATE_IDX_RE.sub("", INSERT_IDX_RE.sub("", annotated_text))
 
-    def insert(self, *insertions: str) -> str:
+    """Takes tuples of (insertion index, insertion string) pairs and inserts string
+    in order by index"""
+    def insert(self, *insertions: Tuple[str, str]) -> str:
         text = self.annotated_text
-        for insertion in insertions:
+        # order by insertion index
+        for _, insertion in sorted(insertions, key=lambda x: int(x[0])):
             text = INSERT_IDX_RE.sub(insertion, text, count=1)
         return text
     
@@ -159,11 +162,14 @@ class ElementGroupContext(Context):
 
 
 class PageContext(Context):
-    _filename = PAGE_HTML_FILENAME
-
-    def __init__(self, annotated_text: str, context_dir: str):
+    def __init__(self, annotated_text: str, context_dir: str, parse_config_id: str = ""):
         super().__init__(annotated_text)
         self.context_dir = context_dir
+        self.parse_config_id = parse_config_id
+
+
+class FullPageContext(PageContext):
+    _filename = PAGE_HTML_FILENAME
 
     @classmethod
     def from_config(cls, cfg: ParsePageConfig) -> "PageContext":
@@ -172,25 +178,55 @@ class PageContext(Context):
             session_id=cfg.session_id,
             cache_dir=cfg.cache_dir,
             page_id=cfg.site_id,
-            subdir=get_parse_config_id(min_class_overlap=cfg.min_class_overlap, min_num_matches=cfg.min_num_matches),
         )
-        return cls(annotated_text=text, context_dir=os.path.dirname(path))
+        return cls(
+            annotated_text=text,
+            context_dir=os.path.dirname(path),
+            parse_config_id=get_parse_config_id(
+                min_class_overlap=cfg.min_class_overlap,
+                min_num_matches=cfg.min_num_matches,
+            ),
+        )
     
+
+class ParsedPageContext(PageContext):
+    _filename = PARSED_CONTEXT_FILENAME
+
+    @classmethod
+    def from_config(cls, cfg: ParsePageConfig) -> "PageContext":
+        parse_config_id = get_parse_config_id(
+            min_class_overlap=cfg.min_class_overlap,
+            min_num_matches=cfg.min_num_matches,
+        )
+        text, path = load_from_cache(
+            filename=cls._filename,
+            session_id=cfg.session_id,
+            cache_dir=cfg.cache_dir,
+            page_id=cfg.site_id,
+            subdir=parse_config_id,
+        )
+        return cls(
+            annotated_text=text,
+            context_dir=os.path.dirname(path),
+            parse_config_id=parse_config_id,
+        )
+
     def get_extracted_group_context(self) -> List[ElementGroupContext]:
         extracted_groups_dir = os.path.join(self.context_dir, EXTRACTED_CONTENT_GROUP_SUBDIR)
         group_ctx = []
         for f in listdir(extracted_groups_dir):
+            group_idx = f.split(".")[0]
             path = os.path.join(extracted_groups_dir, f)
             content = load_from_path(path)
-            group_ctx += [ElementGroupContext(annotated_text=content, context_file=path)]
+            group_ctx += [(group_idx, ElementGroupContext(annotated_text=content, context_file=path))]
         return group_ctx
 
 
-class EmbellishedPageContext(PageContext):
+class EmbellishedPageContext(ParsedPageContext):
     _filename = DESCRIPTION_INSERTED_CONTEXT_FILENAME
 
-    def __init__(self, annotated_text: str, context_dir: str):
-        super().__init__(annotated_text, context_dir)
+    def __init__(self, annotated_text: str, context_dir: str, parse_config_id: str = ""):
+        super().__init__(annotated_text, context_dir, parse_config_id=parse_config_id)
         self.content_idx = {}
 
     def populate_content_idx(self):

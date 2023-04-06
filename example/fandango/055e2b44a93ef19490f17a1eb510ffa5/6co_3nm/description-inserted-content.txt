@@ -47,19 +47,19 @@ Buy Movie Tickets
 %<21:/html/body[1]/main[1]/section[1]/div[1]/section[1]/div[1]/div[1]/a[1]%>
 See All Movies
 %<22:/html/body[1]/main[1]/section[1]/div[1]/div[2]/div[1]/div[1]/div[1]/ul[1]%>
-purchase tickets or learn more about special offers and promotions related to movies and attractions.
+choose which upcoming movie release date to view.
 %<23:/html/body[1]/main[1]/section[1]/div[1]/div[2]/div[1]/div[1]/button[2]/span[1]%>
 Go to more films
 %<24:/html/body[1]/main[1]/section[2]/div[1]/h2[1]%>
 Features
 %<25:/html/body[1]/main[1]/section[2]/div[1]/div[1]/div[1]/ul[1]%>
-choose which entertainment link to click on based on personal interest.
+select which of the three exclusive video clips to view.
 %<26:/html/body[1]/main[1]/section[2]/div[1]/div[1]/div[1]/button[2]/span[1]%>
 Go to next featured item
 %<27:/html/body[1]/footer[1]/section[1]/h2[1]%>
 Offers
 %<28:/html/body[1]/footer[1]/section[1]/ul[1]%>
-select which upcoming movies to view information and updates on.
+purchase tickets for various movies and receive additional perks or discounts.
 %<29:/html/body[1]/footer[1]/section[2]/div[1]/h2[1]%>
 New & Coming soon
 %<30:/html/body[1]/footer[1]/section[2]/div[1]/ul[1]/li[1]/a[1]/p[1]%>

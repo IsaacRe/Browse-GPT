@@ -1,0 +1,3 @@
+2:select which special offer or promotion to take advantage of when purchasing a movie or event ticket through Fandango.
+1:select a nearby movie theater with desired amenities and showtimes.
+0:select a specific date in April.

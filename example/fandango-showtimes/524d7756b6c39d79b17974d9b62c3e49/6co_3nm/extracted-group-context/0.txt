@@ -1,0 +1,30 @@
+%<0:/html/body[1]/main[1]/div[1]/div[1]/section[2]/div[1]/div[1]/div[1]/ul[1]/li[2]%>
+Friday, April 7
+Fri
+Apr
+07
+%<1:/html/body[1]/main[1]/div[1]/div[1]/section[2]/div[1]/div[1]/div[1]/ul[1]/li[3]%>
+Saturday, April 8
+Sat
+Apr
+08
+%<2:/html/body[1]/main[1]/div[1]/div[1]/section[2]/div[1]/div[1]/div[1]/ul[1]/li[4]%>
+Sunday, April 9
+Sun
+Apr
+09
+%<3:/html/body[1]/main[1]/div[1]/div[1]/section[2]/div[1]/div[1]/div[1]/ul[1]/li[5]%>
+Monday, April 10
+Mon
+Apr
+10
+%<4:/html/body[1]/main[1]/div[1]/div[1]/section[2]/div[1]/div[1]/div[1]/ul[1]/li[6]%>
+Tuesday, April 11
+Tue
+Apr
+11
+%<5:/html/body[1]/main[1]/div[1]/div[1]/section[2]/div[1]/div[1]/div[1]/ul[1]/li[7]%>
+Wednesday, April 12
+Wed
+Apr
+12
