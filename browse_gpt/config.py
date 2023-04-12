@@ -66,6 +66,7 @@ class CommonConfig(ConfigBase):
     url: make_arg("--url", type=str)
     session_id: make_arg("--session-id", type=str, default="1")
     cache_dir: make_arg("--cache-dir", type=str, default=".cache")
+    db_url: make_arg("--db-url", type=str, default="postgresql://root:root@0.0.0.0/browse-gpt-db")
 
     def post_init(cls, log_level: str, **_: Any):
         setup_logger(log_level)

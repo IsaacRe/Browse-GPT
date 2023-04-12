@@ -127,11 +127,13 @@ def get_decorated_elem(driver: Chrome, soup: Tag, parent_xpath: str, tag: str, t
     return a
 
 
-def extract_context(s: Tag, attrs: List[str] = ['aria-label', 'placeholder']) -> Tuple[str, Dict[str, str]]:
+def extract_context(s: Tag, attrs: List[str] = ['aria-label', 'placeholder'], all_text: bool = False) -> Tuple[str, Dict[str, str]]:
     attr_dict = {}
     for attr in attrs:
         if attr in s.attrs:
             attr_dict[attr] = s.attrs[attr]
+    if all_text:
+        return format_text_newline(s.get_text()), attr_dict
     text = ''
     for c in s.children:
         if type(c) == NavigableString:
@@ -139,9 +141,9 @@ def extract_context(s: Tag, attrs: List[str] = ['aria-label', 'placeholder']) ->
     return text.strip(), attr_dict
 
 
-def extract_and_format_context(s: Tag, attrs: List[str] = ['aria-label', 'placeholder']) -> str:
+def extract_and_format_context(s: Tag, attrs: List[str] = ['aria-label', 'placeholder'], all_text: bool = False) -> str:
     context = ''
-    text, attr_dict = extract_context(s, attrs=attrs)
+    text, attr_dict = extract_context(s, attrs=attrs, all_text=all_text)
     for attr in attr_dict:
         context += '\n' + f'{attr}: {attr_dict[attr]}'
     context += '\n' + text
@@ -156,6 +158,7 @@ def recurse_get_context(
 ) -> Tuple[List[str], List["DecoratedSoup"], List[List["DecoratedSoup"]]]:
     context = extract_and_format_context(ds.soup, attrs=attrs)
     if context:
+        ds.context = context
         return [context], [ds], []
     descendent_context = []
     class_sets = []
@@ -194,6 +197,8 @@ def recurse_get_context(
             ds_elems += elems
             ds_elem_groups += elem_groups_
         else:
+            for e in g:
+                e.context = extract_and_format_context(e.soup, attrs=attrs, all_text=True)
             soup_group = DecoratedSoupGroup(g)
             descendent_context += ['']
             ds_elem_groups += [soup_group]
@@ -218,7 +223,7 @@ class DecoratedSoup:
 class DecoratedSoupGroup(DecoratedSoup):
     def __init__(self, elems: List[DecoratedSoup]):
         self.elems = list(elems)
-        super().__init__(self.elems[0], self.elems[0].xpath, self.elems[0].driver_elem)
+        super().__init__(self.elems[0].soup, self.elems[0].xpath, self.elems[0].driver_elem)
         self.group_xpath = "/".join(self.xpath.split("/")[:-1])
 
 

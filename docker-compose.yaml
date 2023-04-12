@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  database:
+    image: postgres:9.6-alpine
+    environment:
+      POSTGRES_DB: browse-gpt-db
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    ports:
+      - target: 5432
+        published: 5432

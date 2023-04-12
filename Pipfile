@@ -13,6 +13,11 @@ lxml = "*"
 networkx = "*"
 tqdm = "*"
 openai = "*"
+pandas = "*"
+sqlalchemy = "*"
+alembic = "*"
+psycopg2-binary = "*"
+click = "*"
 
 [dev-packages]
 

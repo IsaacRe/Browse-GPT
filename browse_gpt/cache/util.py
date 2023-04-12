@@ -73,9 +73,11 @@ def get_save_path(filename: str, session_id: str, cache_dir: str,  page_id: str,
     return os.path.join(dir, filename)
 
 
-def save_to_cache(content: str, filename: str, session_id: str, cache_dir: str,  page_id: str, subdir: str = None):
-    with open(get_save_path(filename=filename, session_id=session_id, cache_dir=cache_dir, page_id=page_id, subdir=subdir), "w+") as f:
+def save_to_cache(content: str, filename: str, session_id: str, cache_dir: str,  page_id: str, subdir: str = None) -> str:
+    path = get_save_path(filename=filename, session_id=session_id, cache_dir=cache_dir, page_id=page_id, subdir=subdir)
+    with open(path, "w+") as f:
         f.write(content)
+    return path
 
 
 def get_load_path(filename: str, session_id: str, cache_dir: str,  page_id: str, subdir: str = None) -> str:

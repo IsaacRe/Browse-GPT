@@ -29,12 +29,12 @@ STRIP_NON_ALNUM_RE = re.compile(r"^[^0-9a-zA-Z'\"]*([0-9a-zA-Z'\"].*[0-9a-zA-Z'\
 logger = logging.getLogger(__name__)
 
 
-def format_describe_selection_prompt(group_ctx: ElementGroupContext) -> str:
-    return LINK_SELECTION_DESCRIPTION_TEMPLATE.format(context=group_ctx.raw_text)
+def format_describe_selection_prompt(group_ctx: str) -> str:
+    return LINK_SELECTION_DESCRIPTION_TEMPLATE.format(context=group_ctx)
 
 
-def format_filter_elements_prompt(page_ctx: EmbellishedPageContext, website: str, task_description: str) -> str:
-    context = page_ctx.prepare_annotated_text(remove_xpath_from_ann)
+def format_filter_elements_prompt(page_ctx: List[str], website: str, task_description: str) -> str:
+    context = "\n".join([f"%<{i}%> {ctx}" for i, ctx in enumerate(page_ctx)])
     return FILTER_ELEMENTS_FROM_CONTEXT_TEMPLATE.format(site=website, context=context, task=task_description)
 
 
