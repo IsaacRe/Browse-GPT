@@ -1,7 +1,7 @@
 import sys
 from browse_gpt.config import ParsePageConfig
 from browse_gpt.db import DBClient
-from browse_gpt.cache.element import get_group_context_for_page, update_group_description_for_page
+from browse_gpt.cache.util import get_group_context_for_page, update_group_description_for_page
 from browse_gpt.prompt.interface import describe_selection
 
 

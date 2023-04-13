@@ -10,7 +10,7 @@ from browse_gpt.cache.util import (
     get_workdir,
     PAGE_HTML_FILENAME,
 )
-from browse_gpt.cache.element import get_context_for_page
+from browse_gpt.cache.util import get_context_for_page
 from browse_gpt.prompt.interface import filter_context
 from browse_gpt.db import DBClient
 from browse_gpt.model import Task, Session, FilteredElement

@@ -11,7 +11,7 @@ from browse_gpt.cache.util import (
     get_workdir,
     PAGE_HTML_FILENAME,
 )
-from browse_gpt.cache.element import get_filtered_context_for_page
+from browse_gpt.cache.util import get_filtered_context_for_page
 from browse_gpt.cache.action import ActionSpec, ElementActionType
 from browse_gpt.prompt.interface import get_text_input_for_field
 from browse_gpt.db import DBClient
@@ -32,27 +32,6 @@ def main(config: TaskExecutionConfig):
             url_hash=config.site_id,
         )
     )
-
-    # # add task to db
-    # with db_client.transaction() as db_session:
-    #     session: Session = db_session.query(Session).filter(Session.tag == config.session_id).one()
-    #     task = Task(
-    #         session_id=session.id,
-    #         is_root=True,
-    #         context=config.task_description,
-    #     )
-    #     db_session.add(task)
-    #     db_session.commit()
-
-    #     task_id = task.id
-
-    # element_ids, page_ctx, xpaths = zip(
-    #     *get_context_for_page(db_client=db_client, url_hash=config.site_id)
-    # )
-
-    # filtered_elements = filter_context(ctx=page_ctx, website=config.llm_site_id, task_description=config.task_description)
-    # filtered_xpaths = [xpaths[int(ann)] for ann, _ in filtered_elements]
-    # filtered_element_ids = [element_ids[int(ann)] for ann, _ in filtered_elements]
 
     # get task id
     with db_client.transaction() as db_session:
