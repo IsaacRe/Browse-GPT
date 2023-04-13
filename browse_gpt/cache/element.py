@@ -38,6 +38,23 @@ def get_group_context_for_page(db_client: DBClient, url_hash: str):
         ).fetchall()
 
 
+def get_filtered_context_for_page(db_client: DBClient, task_description: str, url_hash: str):
+    with db_client.transaction() as db_session:
+        return db_session.execute(
+            text("""
+                SELECT elements.id, xpath
+                FROM filtered_elements
+                JOIN elements ON element_id = elements.id
+                JOIN tasks ON task_id = tasks.id
+                JOIN pages ON page_id = pages.id
+                WHERE
+                    tasks.context = :task_description
+                    AND pages.url_hash = :url_hash
+            """),
+            {"task_description": task_description, "url_hash": url_hash},
+        ).fetchall()
+
+
 def update_group_description_for_page(db_client: DBClient, url_hash: str, positions: List[int], descriptions: List[str]):
     with db_client.transaction() as db_session:
         db_session.execute(

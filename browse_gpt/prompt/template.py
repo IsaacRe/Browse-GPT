@@ -22,7 +22,16 @@ FILTER_ELEMENTS_FROM_CONTEXT_TEMPLATE = """Below is text extracted from HTML ele
 List elements from above that might be useful in completing the task "{task}" or a generalization of it. Put each output in the format `%<element index%>: action taken with this element`
 """
 
+GENERATE_INPUT_TEXT_TEMPLATE = """Below is HTML for an input field on {site}:
+```html
+{context}
+```
+
+Write to input into this field in order to complete the task "{task}". Put your response in the format `input: [text input]`
+"""
+
 ELEMENT_ID_ACTION_SEPARATOR = ":"
+GENERATED_INPUT_TEXT_PREFIX = "input:"
 
 STRIP_NON_ALNUM_RE = re.compile(r"^[^0-9a-zA-Z'\"]*([0-9a-zA-Z'\"].*[0-9a-zA-Z'\"])[^0-9a-zA-Z'\"]*$")
 
@@ -36,6 +45,10 @@ def format_describe_selection_prompt(group_ctx: str) -> str:
 def format_filter_elements_prompt(page_ctx: List[str], website: str, task_description: str) -> str:
     context = "\n".join([f"%<{i}%> {ctx}" for i, ctx in enumerate(page_ctx)])
     return FILTER_ELEMENTS_FROM_CONTEXT_TEMPLATE.format(site=website, context=context, task=task_description)
+
+
+def format_generate_input_text_prompt(element_ctx: str, website: str, task_description: str) -> str:
+    return GENERATE_INPUT_TEXT_TEMPLATE.format(site=website, context=element_ctx, task=task_description)
 
 
 def extract_selection_description(description: str) -> str:
@@ -57,3 +70,13 @@ def extract_filtered_elements(response: str) -> List[Tuple[str, str]]:
             continue
         idx_action += [(ann, action)]
     return idx_action
+
+
+def extract_generated_input_text(response: str) -> str:
+    response = response.lower()
+    _, _, input_text = response.partition(GENERATED_INPUT_TEXT_PREFIX)
+    try:
+        input_text, = STRIP_NON_ALNUM_RE.findall(input_text)
+    except (ValueError, TypeError):
+        raise Exception(f"Got bad response for input text generation: {response}")
+    return input_text

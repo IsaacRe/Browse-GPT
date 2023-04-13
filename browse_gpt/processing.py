@@ -12,6 +12,79 @@ from .config import MIN_CLASS_OVERLAP, MIN_NUM_MATCHES
 
 logger = logging.getLogger(__name__)
 
+INTERACTIVE_ROLES = [
+    "button",
+    "checkbox",
+    "radio",
+    "radiogroup",
+#    "combobox",
+#    "form",
+    "link",
+#    "menu",
+#    "menubar",
+    "menuitem",
+    "menuitemcheckbox",
+    "menuitemradio",
+    "navigation",
+#    "search",
+    "searchbox",
+    "textbox",
+    "switch",
+    "tab",
+#    "tablist",
+]
+TEXT_INPUT_ROLES = ["textbox", "searchbox"]
+
+INTERACTIVE_ELEMENTS = ["input", "button", "a"]
+INTERACTIVE_ATTRIBUTES = {"role": INTERACTIVE_ROLES, "placeholder": None}
+TEXT_INPUT_ELEMENTS = ["input"]
+TEXT_INPUT_ATTRIBUTES = {"role": TEXT_INPUT_ROLES, "placeholder": None}
+
+
+def _format_css_query(keep_attrs: Dict[str, List[str]] = {}, keep_elems: List[str] = []):
+    query = ", ".join(keep_elems)
+    attr_constraints = []
+    for attr, values in keep_attrs.items():
+        if values is None:
+            attr_constraints += [f"[{attr}]"]
+        else:
+            attr_constraints += [f'[{attr}="{v}"]' for v in values]
+    if attr_constraints:
+        query += ", " + ", ".join(attr_constraints)
+    return query
+
+
+def is_special(e: WebElement, keep_attrs: Dict[str, List[str]] = {}, keep_elems: List[str] = []):
+    if isinstance(keep_attrs, list):
+        keep_attrs = {attr: None for attr in keep_attrs}
+    if e.tag_name in keep_elems:
+        return True
+    for a in keep_attrs:
+        if isinstance(keep_attrs, dict):
+            attr_value = e.get_attribute(a)
+            if attr_value is not None and (keep_attrs[a] is None or keep_attrs[a] == attr_value):
+                return True
+            #if a in e.attrs and (keep_attrs[a] is None or e.attrs[a] in keep_attrs[a]):
+            #    return True
+    return False
+
+
+def extract_first_interactive_from_outer_html(e: WebElement) -> WebElement:
+    if is_interactive_element(e):
+        return e
+    return e.find_element(
+        by=By.CSS_SELECTOR,
+        value=_format_css_query(keep_attrs=INTERACTIVE_ATTRIBUTES, keep_elems=INTERACTIVE_ELEMENTS)
+    )
+
+
+def is_interactive_element(e: WebElement):
+    return is_special(e=e, keep_attrs=INTERACTIVE_ATTRIBUTES, keep_elems=INTERACTIVE_ELEMENTS)
+
+
+def is_text_input(e: WebElement):
+    return is_special(e=e, keep_attrs=TEXT_INPUT_ATTRIBUTES, keep_elems=TEXT_INPUT_ELEMENTS)
+
 
 def adjacency_matrix_to_groups(sections: List["DecoratedSoup"], adj: np.ndarray) -> Tuple[List[List["DecoratedSoup"]], np.ndarray]:
     # gather element groups

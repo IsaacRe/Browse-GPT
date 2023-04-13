@@ -1,7 +1,8 @@
 import logging
 from typing import List
+from undetected_chromedriver.webelement import WebElement
 
-from .template import format_describe_selection_prompt, extract_selection_description, format_filter_elements_prompt, extract_filtered_elements
+from .template import format_describe_selection_prompt, extract_selection_description, format_filter_elements_prompt, extract_filtered_elements, extract_generated_input_text, format_generate_input_text_prompt
 from ..llm.openai_api import single_response
 from ..cache.util import ElementGroupContext, EmbellishedPageContext
 
@@ -22,3 +23,15 @@ def filter_context(ctx: EmbellishedPageContext, website: str, task_description: 
     prompt = format_filter_elements_prompt(page_ctx=ctx, website=website, task_description=task_description)
     message = single_response(prompt)
     return extract_filtered_elements(message)
+
+
+"""Generate text to input into an HTML input field element"""
+def get_text_input_for_field(e: WebElement, website: str, task_description: str) -> str:
+    outer_html = e.get_attribute("outerHTML")
+    prompt = format_generate_input_text_prompt(
+        element_ctx=outer_html,
+        website=website,
+        task_description=task_description
+    )
+    message = single_response(prompt)
+    return extract_generated_input_text(message)
