@@ -87,6 +87,7 @@ def upgrade():
         sa.Column("id", sa.BigInteger, primary_key=True),
         sa.Column("task_id", sa.BigInteger, sa.ForeignKey("tasks.id", ondelete="CASCADE"), nullable=False),
         sa.Column("element_id", sa.BigInteger, sa.ForeignKey("elements.id", ondelete="CASCADE"), index=True, nullable=False),
+        sa.Column("description", sa.Text),
     )
     op.create_unique_constraint("filtered_elements_task_id_element_id_uix", "filtered_elements", ["task_id", "element_id"])
 

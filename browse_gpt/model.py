@@ -76,6 +76,7 @@ class FilteredElement(Base):
     id = Column(BigInteger, primary_key=True)
     task_id = Column(BigInteger, ForeignKey("tasks.id"), nullable=False)
     element_id = Column(BigInteger, ForeignKey("elements.id"), index=True, nullable=False)
+    description = Column("description", Text)
 
     __table_args__ = (
         UniqueConstraint("task_id", "element_id", name="filtered_elements_task_id_element_id_uix"),

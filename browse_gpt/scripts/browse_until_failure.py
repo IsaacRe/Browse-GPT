@@ -18,16 +18,20 @@ from browse_gpt.agent import select_and_run_action
 logger = logging.getLogger(__name__)
 
 # TODO
-# - logging
-# - benchmark runtime
-# - checking for cache presence initially
-# - remove is_visible check to save time on initial HTML processing
-# - query for final task selection
 # - add task branching
 #   - update action object with new_page_id
+#   - 
+#       1. describe prior action
+#       2. add to list of actions taken
+#       3. maybe add another selection step after filtering
 #   - break task context into combination of past action context and task context
-# - optimize DB exchanges
+# - add querying for external information
 # - add html context branching
+#    - intially just for same-class groups
+# - checking for cache presence at intermediate steps (page caching completeness)
+# - remove is_visible check to save time on initial HTML processing
+# - query for final task selection
+# - optimize DB exchanges
 
 
 def main(config: BrowingSessionConfig):
@@ -85,12 +89,13 @@ def main(config: BrowingSessionConfig):
             logger.info("Filtering parsed content...")
             with timer() as t:
                 filtered_elements = filter_context(ctx=page_ctx, website=config.llm_site_id, task_description=config.task_description)
+                filtered_action_descriptions = [desc for _, desc in filtered_elements]
                 filtered_xpaths = [xpaths[int(ann)] for ann, _ in filtered_elements]
                 filtered_element_ids = [element_ids[int(ann)] for ann, _ in filtered_elements]
             logger.info(f"Done filtering parsed content. ({t.seconds()}s)")
 
             # add filtered context to db
-            add_filtered_elements(db_client=db_client, task_id=task_id, filtered_element_ids=filtered_element_ids)
+            add_filtered_elements(db_client=db_client, task_id=task_id, filtered_element_ids=filtered_element_ids, filtered_descriptions=filtered_action_descriptions)
         
         else:
             logger.info("Retrieved page from cache.")
@@ -115,8 +120,6 @@ def main(config: BrowingSessionConfig):
             raise Exception("Failed to execute interact successfully with any filtered elements")
 
         new_action(db_client=db_client, task_id=task_id, element_id=element_id, action_spec=action_spec)
-        
-        # TODO debug
         break
 
     return 0

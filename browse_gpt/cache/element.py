@@ -1,7 +1,7 @@
 from typing import List, Tuple
 from sqlalchemy import text
 
-from ..processing import DecoratedSoup, DecoratedSoupGroup
+from ..processing import DecoratedSoup, DecoratedSoupGroup, format_text_newline
 from ..model import Element, FilteredElement
 from ..db import DBClient
 
@@ -19,7 +19,7 @@ def add_elements(db_client: DBClient, page_id: int, elements: List[DecoratedSoup
                     element_position=i,
                     outer_html=str(e.soup.parent),  # TODO Change: currently DecoratedSoupGroup sets soup to first element
                     is_leaf=False,
-                    context=context,
+                    context=format_text_newline(context),
                 )
                 db_session.add(parent_element)
                 db_session.commit()
@@ -32,7 +32,7 @@ def add_elements(db_client: DBClient, page_id: int, elements: List[DecoratedSoup
                         element_position=j,
                         outer_html=str(e_.soup),
                         is_root=False,
-                        context=e_.context,
+                        context=format_text_newline(e_.context),
                     )
                     db_session.add(element)
                 
@@ -43,7 +43,7 @@ def add_elements(db_client: DBClient, page_id: int, elements: List[DecoratedSoup
                     element_position=i,
                     xpath=e.xpath,
                     outer_html=str(e.soup),
-                    context=e.context,
+                    context=format_text_newline(e.context),
                 )
                 db_session.add(element)
                 db_session.commit()
@@ -54,12 +54,20 @@ def add_elements(db_client: DBClient, page_id: int, elements: List[DecoratedSoup
 
 
 # task_id | element_id
-def add_filtered_elements(db_client: DBClient, task_id: int, filtered_element_ids: List[int]) -> List[int]:
+def add_filtered_elements(
+        db_client: DBClient,
+        task_id: int,
+        filtered_element_ids: List[int],
+        filtered_descriptions: List[str] = None,
+) -> List[int]:
+    if filtered_descriptions is None:
+        filtered_descriptions = [None] * len(filtered_element_ids)
     with db_client.transaction() as db_session:
-        for element_id in filtered_element_ids:
+        for element_id, description in zip(filtered_element_ids, filtered_descriptions):
             filtered_elem = FilteredElement(
                 task_id=task_id,
                 element_id=element_id,
+                description=description,
             )
             db_session.add(filtered_elem)
 
