@@ -8,6 +8,7 @@ from .cache.action import ActionSpec, ElementActionType
 from .prompt.interface import get_text_input_for_field
 from .processing import extract_first_interactive_from_outer_html, is_text_input
 from .config import BrowingSessionConfig
+from .util import timer
 
 logger = logging.getLogger(__name__)
 
@@ -29,14 +30,15 @@ def select_and_run_action(
         input_text = None
         action_type = ElementActionType.CLICK
         if is_text_input(interactive_e):
-            logger.info("Getting text field input for element...")
-            input_text = get_text_input_for_field(
-                e=interactive_e,
-                website=config.llm_site_id,
-                task_description=config.task_description,
-            )
-            action_type = ElementActionType.INPUT_KEYS_ENTER
-            logger.info("Done.")
+            logger.info("Generating text field input for element...")
+            with timer() as t:
+                input_text = get_text_input_for_field(
+                    e=interactive_e,
+                    website=config.llm_site_id,
+                    task_description=config.task_description,
+                )
+                action_type = ElementActionType.INPUT_KEYS_ENTER
+            logger.info(f"Done generating text input. ({t.seconds()}s)")
         action_spec = ActionSpec(action_type=action_type, input_text=input_text)
 
         # run the action    

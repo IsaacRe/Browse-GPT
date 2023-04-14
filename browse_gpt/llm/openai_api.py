@@ -3,8 +3,13 @@ from enum import Enum
 from typing import List
 import os
 import openai
+import logging
+
+from ..util import timer
 
 OPENAI_DEFAULT_CHAT_MODEL = "gpt-3.5-turbo"
+
+logger = logging.getLogger(__name__)
 
 
 def set_api_key(key: str):
@@ -15,7 +20,7 @@ def extract_response(chat_api_response):
     return OpenAIChatMessage(**chat_api_response["choices"][0]["message"])
 
 
-def complete_chat(context: List["OpenAIChatMessage"], openai_model: str = OPENAI_DEFAULT_CHAT_MODEL):
+def complete_chat(context: List["OpenAIChatMessage"], openai_model: str = OPENAI_DEFAULT_CHAT_MODEL) -> "OpenAIChatMessage":
     result = openai.ChatCompletion.create(
         model=openai_model,
         messages=[ctx.asdict() for ctx in context],
@@ -23,8 +28,14 @@ def complete_chat(context: List["OpenAIChatMessage"], openai_model: str = OPENAI
     return extract_response(result)
 
 
-def single_response(message: str, openai_model: str = OPENAI_DEFAULT_CHAT_MODEL):
-    return complete_chat(context=[OpenAIChatMessage(content=message)], openai_model=openai_model).content
+def single_response(message: str, openai_model: str = OPENAI_DEFAULT_CHAT_MODEL) -> "OpenAIChatMessage":
+    logger.info(f"Querying OpenAI API (message length={len(message)})...")
+    logger.debug(f'Message: """{message}"""')
+    with timer() as t:
+        response = complete_chat(context=[OpenAIChatMessage(content=message)], openai_model=openai_model).content
+    logger.info(f"Done. ({t.seconds()}s)")
+    logger.debug(f'Response: """{response}"""')
+    return response
 
 
 class OpenAIChatMessageRole(Enum):

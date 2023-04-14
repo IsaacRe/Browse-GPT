@@ -58,12 +58,14 @@ class ConfigBase:
         cfg.post_init(**parsed_args)
         return cfg
     
-    def post_init(cls, **_: Any):
+    def post_init(self, **_: Any):
         pass
 
 
 @dataclass
 class CommonConfig(ConfigBase):
+    _args: ClassVar[_ArgumentGroup] = _PARSER.add_argument_group()
+
     log_level: make_arg("--log-level", type=str, choices=list(LOG_LEVELS), default="info")
     url: make_arg("--url", type=str)
     session_id: make_arg("--session-id", type=str, default="1")
@@ -107,6 +109,8 @@ class TaskExecutionConfig(ParsePageConfig):
         # set identifier used in LLM interface to site_id if not explicitly set
         if not llm_site_id:
             self.llm_site_id = self.site_id
+        if self.llm_site_id.isnumeric():
+            raise Exception("LLM site ID should be a colloquial identifier of the site (not a numeric ID)")
 
 
 @dataclass

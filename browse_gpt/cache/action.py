@@ -82,6 +82,6 @@ class ActionSpec:
             ElementActionType.INPUT_KEYS_ENTER,
         ]:
             e.send_keys(self.input_text)
-            driver.implicitly_wait(1)
+            driver.implicitly_wait(2)
             if self.action_type == ElementActionType.INPUT_KEYS_ENTER:
                 e.send_keys(Keys.ENTER)

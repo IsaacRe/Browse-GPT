@@ -9,6 +9,7 @@ from typing import List, Set, Tuple, Dict
 import logging
 
 from .config import MIN_CLASS_OVERLAP, MIN_NUM_MATCHES
+from .util import timer
 
 logger = logging.getLogger(__name__)
 
@@ -142,8 +143,9 @@ def group_sections_by_class_overlap(
         curr_max = pairwise_class_overlap[diag_filter].max()
         max_cls_overlap = max(max_cls_overlap, curr_max)
     except:
-        logger.debug(pairwise_class_overlap.shape)
-    logger.debug(curr_max)
+        pass
+    #     logger.debug(pairwise_class_overlap.shape)
+    # logger.debug(curr_max)
     
     element_groups, element_group_assignment = adjacency_matrix_to_groups(sections, element_match)
 
@@ -223,6 +225,17 @@ def extract_and_format_context(s: Tag, attrs: List[str] = ['aria-label', 'placeh
     return context.strip()
 
 
+def get_current_page_context(driver: Chrome) -> List["DecoratedSoup"]:
+    logger.info("Parsing page content...")
+    with timer() as t:
+        root_elem = BeautifulSoup(driver.page_source).find()
+        ds = get_decorated_elem(driver=driver, soup=root_elem, parent_xpath="/", tag=root_elem.name, tag_index=0)
+        _, elems, _ = recurse_get_context(driver=driver, ds=ds)
+    logger.info(f"Done parsing page content. ({t.seconds()}s)")
+    logger.debug(f"Found {sum([isinstance(e, DecoratedSoupGroup) for e in elems])} same-class groups")
+    return elems
+
+
 def recurse_get_context(
     driver: Chrome,
     ds: "DecoratedSoup",
@@ -256,15 +269,15 @@ def recurse_get_context(
     if len(live_children) > 1:
         # check for same-class groups
         elem_groups, _, _ = group_sections_by_class_overlap(live_children, class_sets)
-        logger.debug(ds.soup.name)
-        logger.debug([len(g) for g in elem_groups])
+        # logger.debug(ds.soup.name)
+        # logger.debug([len(g) for g in elem_groups])
     elif len(live_children) > 0:
         elem_groups = [live_children]
 
     for g in elem_groups:
         dc, *_ = g
         if len(g) == 1:
-            logger.debug(f'recursing to {str(dc.soup)[:30]}')
+            # logger.debug(f'recursing to {str(dc.soup)[:30]}')
             context, elems, elem_groups_ = recurse_get_context(driver=driver, ds=dc, xpath=dc.xpath)
             descendent_context += context
             ds_elems += elems
@@ -277,7 +290,7 @@ def recurse_get_context(
             ds_elem_groups += [soup_group]
             ds_elems += [soup_group]
             
-    logger.debug(f'found groups for {ds.soup.name}: {[len(g) for g in elem_groups]}')
+    # logger.debug(f'found groups for {ds.soup.name}: {[len(g) for g in elem_groups]}')
 
     return descendent_context, ds_elems, ds_elem_groups
 

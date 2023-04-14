@@ -30,7 +30,7 @@ def upgrade():
     op.create_table(
         "pages",
         sa.Column("id", sa.BigInteger, primary_key=True),
-        sa.Column("session_id", sa.BigInteger, sa.ForeignKey("sessions.id"), nullable=False),
+        sa.Column("session_id", sa.BigInteger, sa.ForeignKey("sessions.id", ondelete="CASCADE"), nullable=False),
         sa.Column("url", sa.Text, nullable=False),
         sa.Column("url_hash", sa.Text, index=True, nullable=False),
         sa.Column("content_path", sa.Text)
@@ -41,10 +41,10 @@ def upgrade():
     op.create_table(
         "elements",
         sa.Column("id", sa.BigInteger, primary_key=True),
-        sa.Column("page_id", sa.BigInteger, sa.ForeignKey("pages.id"), nullable=False),
+        sa.Column("page_id", sa.BigInteger, sa.ForeignKey("pages.id", ondelete="CASCADE"), nullable=False),
         sa.Column("is_root", sa.Boolean, index=True, server_default="t"),
         sa.Column("is_leaf", sa.Boolean, index=True, server_default="t"),
-        sa.Column("parent_id", sa.BigInteger, sa.ForeignKey("elements.id")),  # handling element groups through parent reference
+        sa.Column("parent_id", sa.BigInteger, sa.ForeignKey("elements.id", ondelete="SET NULL")),  # handling element groups through parent reference
         sa.Column("xpath", sa.Text, nullable=False),
         sa.Column("element_position", sa.BigInteger, nullable=False),
         sa.Column("outer_html", sa.Text, nullable=False),
@@ -58,10 +58,10 @@ def upgrade():
     op.create_table(
         "tasks",
         sa.Column("id", sa.BigInteger, primary_key=True),
-        sa.Column("session_id", sa.BigInteger, sa.ForeignKey("sessions.id"), nullable=False),
+        sa.Column("session_id", sa.BigInteger, sa.ForeignKey("sessions.id", ondelete="CASCADE"), nullable=False),
         sa.Column("is_root", sa.Boolean, index=True, server_default="f"),
         sa.Column("is_leaf", sa.Boolean, index=True, server_default="f"),
-        sa.Column("parent_id", sa.BigInteger, sa.ForeignKey("tasks.id"), index=True),
+        sa.Column("parent_id", sa.BigInteger, sa.ForeignKey("tasks.id", ondelete="SET NULL"), index=True),
         sa.Column("subtask_position", sa.BigInteger),
         sa.Column("context", sa.Text, nullable=False),
     )
@@ -72,9 +72,9 @@ def upgrade():
     op.create_table(
         "actions",
         sa.Column("id", sa.BigInteger, primary_key=True),
-        sa.Column("task_id", sa.BigInteger, sa.ForeignKey("tasks.id"), nullable=False),
-        sa.Column("element_id", sa.BigInteger, sa.ForeignKey("elements.id"), index=True, nullable=False),
-        sa.Column("new_page_id", sa.BigInteger, sa.ForeignKey("pages.id"), index=True),
+        sa.Column("task_id", sa.BigInteger, sa.ForeignKey("tasks.id", ondelete="CASCADE"), nullable=False),
+        sa.Column("element_id", sa.BigInteger, sa.ForeignKey("elements.id", ondelete="CASCADE"), index=True, nullable=False),
+        sa.Column("new_page_id", sa.BigInteger, sa.ForeignKey("pages.id", ondelete="SET NULL"), index=True),
         sa.Column("action_position", sa.BigInteger, nullable=False),
         sa.Column("metadata", sa.JSON),
         sa.Column("description", sa.Text),
@@ -85,8 +85,8 @@ def upgrade():
     op.create_table(
         "filtered_elements",
         sa.Column("id", sa.BigInteger, primary_key=True),
-        sa.Column("task_id", sa.BigInteger, sa.ForeignKey("tasks.id"), nullable=False),
-        sa.Column("element_id", sa.BigInteger, sa.ForeignKey("elements.id"), index=True, nullable=False),
+        sa.Column("task_id", sa.BigInteger, sa.ForeignKey("tasks.id", ondelete="CASCADE"), nullable=False),
+        sa.Column("element_id", sa.BigInteger, sa.ForeignKey("elements.id", ondelete="CASCADE"), index=True, nullable=False),
     )
     op.create_unique_constraint("filtered_elements_task_id_element_id_uix", "filtered_elements", ["task_id", "element_id"])
 
