@@ -1,18 +1,18 @@
 %<0:/html/body[1]/main[1]/section[1]/div[1]/div[2]/div[1]/div[1]/div[1]/ul[1]/li[1]%>
+The Super Mario Bros. Movie (2023) Released Wed, April 5th
+The Super Mario Bros. Movie (2023)
+%<1:/html/body[1]/main[1]/section[1]/div[1]/div[2]/div[1]/div[1]/div[1]/ul[1]/li[2]%>
+The Pope's Exorcist (2023) Opens Friday
+The Pope's Exorcist (2023)
+%<2:/html/body[1]/main[1]/section[1]/div[1]/div[2]/div[1]/div[1]/div[1]/ul[1]/li[3]%>
+Air (2023) Released Wed, April 5th
+Air (2023)
+%<3:/html/body[1]/main[1]/section[1]/div[1]/div[2]/div[1]/div[1]/div[1]/ul[1]/li[4]%>
+Renfield (2023) Opens Friday
+Renfield (2023)
+%<4:/html/body[1]/main[1]/section[1]/div[1]/div[2]/div[1]/div[1]/div[1]/ul[1]/li[5]%>
 Dungeons & Dragons: Honor Among Thieves (2023) Released Fri, March 31st
 Dungeons & Dragons: Honor Among Thieves (2023)
-%<1:/html/body[1]/main[1]/section[1]/div[1]/div[2]/div[1]/div[1]/div[1]/ul[1]/li[2]%>
+%<5:/html/body[1]/main[1]/section[1]/div[1]/div[2]/div[1]/div[1]/div[1]/ul[1]/li[6]%>
 John Wick: Chapter 4 (2023) Released Fri, March 24th
 John Wick: Chapter 4 (2023)
-%<2:/html/body[1]/main[1]/section[1]/div[1]/div[2]/div[1]/div[1]/div[1]/ul[1]/li[3]%>
-Shazam! Fury of the Gods (2023) Released Fri, March 17th
-Shazam! Fury of the Gods (2023)
-%<3:/html/body[1]/main[1]/section[1]/div[1]/div[2]/div[1]/div[1]/div[1]/ul[1]/li[4]%>
-A Good Person (2023) Released Fri, March 24th
-A Good Person (2023)
-%<4:/html/body[1]/main[1]/section[1]/div[1]/div[2]/div[1]/div[1]/div[1]/ul[1]/li[5]%>
-Spinning Gold (2023) Released Fri, March 31st
-Spinning Gold (2023)
-%<5:/html/body[1]/main[1]/section[1]/div[1]/div[2]/div[1]/div[1]/div[1]/ul[1]/li[6]%>
-A Thousand and One (2023) Released Fri, March 31st
-A Thousand and One (2023)

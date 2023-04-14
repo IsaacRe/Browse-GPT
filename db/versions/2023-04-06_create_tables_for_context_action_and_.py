@@ -21,7 +21,7 @@ def upgrade():
     op.create_table(
         "sessions",
         sa.Column("id", sa.BigInteger, primary_key=True),
-        sa.Column("tag", sa.Text, nullable=False),
+        sa.Column("tag", sa.Text, nullable=False, unique=True),
         sa.Column("config", sa.JSON),
     )
 
@@ -30,11 +30,12 @@ def upgrade():
     op.create_table(
         "pages",
         sa.Column("id", sa.BigInteger, primary_key=True),
-        sa.Column("session_id", sa.BigInteger, sa.ForeignKey("sessions.id"), index=True, nullable=False),
+        sa.Column("session_id", sa.BigInteger, sa.ForeignKey("sessions.id"), nullable=False),
         sa.Column("url", sa.Text, nullable=False),
         sa.Column("url_hash", sa.Text, index=True, nullable=False),
         sa.Column("content_path", sa.Text)
     )
+    op.create_unique_constraint("pages_session_id_url_hash_uix", "pages", ["session_id", "url_hash"])
 
     # elements table - stores elements after preprocessing along with their context
     op.create_table(
@@ -57,15 +58,15 @@ def upgrade():
     op.create_table(
         "tasks",
         sa.Column("id", sa.BigInteger, primary_key=True),
-        sa.Column("session_id", sa.BigInteger, sa.ForeignKey("sessions.id"), index=True, nullable=False),
+        sa.Column("session_id", sa.BigInteger, sa.ForeignKey("sessions.id"), nullable=False),
         sa.Column("is_root", sa.Boolean, index=True, server_default="f"),
         sa.Column("is_leaf", sa.Boolean, index=True, server_default="f"),
-        sa.Column("parent_id", sa.BigInteger, sa.ForeignKey("tasks.id")),
+        sa.Column("parent_id", sa.BigInteger, sa.ForeignKey("tasks.id"), index=True),
         sa.Column("subtask_position", sa.BigInteger),
         sa.Column("context", sa.Text, nullable=False),
     )
     # only one root action per session so we can exclude session_id in uix
-    op.create_unique_constraint("tasks_parent_id_subtask_position_uix", "tasks", ["parent_id", "subtask_position"])
+    op.create_unique_constraint("tasks_session_id_parent_id_subtask_position_uix", "tasks", ["session_id", "parent_id", "subtask_position"])
 
     # actions table - stores instances of interaction with specific browser elements on the page
     op.create_table(
@@ -84,9 +85,10 @@ def upgrade():
     op.create_table(
         "filtered_elements",
         sa.Column("id", sa.BigInteger, primary_key=True),
-        sa.Column("task_id", sa.BigInteger, sa.ForeignKey("tasks.id"), index=True, nullable=False),
+        sa.Column("task_id", sa.BigInteger, sa.ForeignKey("tasks.id"), nullable=False),
         sa.Column("element_id", sa.BigInteger, sa.ForeignKey("elements.id"), index=True, nullable=False),
     )
+    op.create_unique_constraint("filtered_elements_task_id_element_id_uix", "filtered_elements", ["task_id", "element_id"])
 
 
 def downgrade():

@@ -82,7 +82,7 @@ def main(config: TaskExecutionConfig):
 
         # run the action    
         try:
-            action_spec.run(interactive_e)
+            action_spec.run(driver=driver, e=interactive_e)
         except Exception as e:
             logger.warning(f"Failed to run action: {e}")
 

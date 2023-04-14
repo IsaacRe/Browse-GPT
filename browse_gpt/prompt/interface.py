@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 """Describe the choice being made by selecting between elements in a group.
 Output will be reinserted into full page context afterward."""
-def describe_selection(group_ctx: ElementGroupContext) -> str:
+def describe_selection(group_ctx: str) -> str:
     prompt = format_describe_selection_prompt(group_ctx=group_ctx)
     message = single_response(prompt)
     return extract_selection_description(message)
@@ -19,7 +19,7 @@ def describe_selection(group_ctx: ElementGroupContext) -> str:
 
 """Select an element to interact with given its extracted text
 Returns identifier corresponding to the selected context"""
-def filter_context(ctx: EmbellishedPageContext, website: str, task_description: str) -> List[str]:
+def filter_context(ctx: List[str], website: str, task_description: str) -> List[str]:
     prompt = format_filter_elements_prompt(page_ctx=ctx, website=website, task_description=task_description)
     message = single_response(prompt)
     return extract_filtered_elements(message)

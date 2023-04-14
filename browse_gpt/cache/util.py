@@ -21,6 +21,23 @@ def get_context_for_page(db_client: DBClient, url_hash: str) -> str:
         ).fetchall()
 
 
+def get_context_for_page_id(db_client: DBClient, page_id: str) -> str:
+    with db_client.transaction() as db_session:
+        return db_session.execute(
+            text("""
+                SELECT
+                    id,
+                    COALESCE(description, context) AS context,
+                    xpath
+                FROM elements
+                WHERE page_id = :page_id
+                    AND context != ''
+                    AND is_root
+            """),
+            {"page_id": page_id},
+        ).fetchall()
+
+
 def get_group_context_for_page(db_client: DBClient, url_hash: str):
     with db_client.transaction() as db_session:
         return db_session.execute(
@@ -35,6 +52,22 @@ def get_group_context_for_page(db_client: DBClient, url_hash: str):
                 GROUP BY t2.id, t2.element_position
             """),
             {"url_hash": url_hash},
+        ).fetchall()
+    
+
+def get_group_context_for_page_id(db_client: DBClient, page_id: str):
+    with db_client.transaction() as db_session:
+        return db_session.execute(
+            text("""
+                SELECT t2.id, t2.element_position, string_agg(t1.context, '\\n') context
+                FROM elements t1
+                JOIN elements t2 ON t1.parent_id = t2.id
+                WHERE t2.page_id = :page_id
+                    AND t1.context != ''
+                    AND NOT t1.is_root
+                GROUP BY t2.id, t2.element_position
+            """),
+            {"page_id": page_id},
         ).fetchall()
 
 
@@ -55,7 +88,7 @@ def get_filtered_context_for_page(db_client: DBClient, task_description: str, ur
         ).fetchall()
 
 
-def update_group_description_for_page(db_client: DBClient, url_hash: str, positions: List[int], descriptions: List[str]):
+def update_group_description_for_page(db_client: DBClient, url_hash: int, positions: List[int], descriptions: List[str]):
     with db_client.transaction() as db_session:
         db_session.execute(
             text("""
@@ -76,6 +109,28 @@ def update_group_description_for_page(db_client: DBClient, url_hash: str, positi
             """),
             {"url_hash": url_hash, "positions": list(positions), "descriptions": list(descriptions)},
         )
+
+
+def update_group_description_for_page_id(db_client: DBClient, element_ids: List[int], descriptions: List[str]):
+    with db_client.transaction() as db_session:
+        db_session.execute(
+            text("""
+                WITH inputs AS (
+                    SELECT
+                        unnest(:element_ids ::bigint[]) AS element_id,
+                        unnest(:descriptions ::text[]) AS description
+                )
+                UPDATE elements
+                SET description = inputs.description
+                FROM inputs
+                WHERE elements.id = inputs.element_id
+            """),
+            {"element_ids": list(element_ids), "descriptions": list(descriptions)},
+        )
+
+
+def get_file_url(path: str) -> str:
+    return f"file://{path}"
 
 
 from os import makedirs
@@ -153,11 +208,15 @@ def get_save_path(filename: str, session_id: str, cache_dir: str,  page_id: str,
     return os.path.join(dir, filename)
 
 
-def save_to_cache(content: str, filename: str, session_id: str, cache_dir: str,  page_id: str, subdir: str = None) -> str:
-    path = get_save_path(filename=filename, session_id=session_id, cache_dir=cache_dir, page_id=page_id, subdir=subdir)
+def save_to_path(content: str, path: str) -> str:
     with open(path, "w+") as f:
         f.write(content)
     return path
+
+
+def save_to_cache(content: str, filename: str, session_id: str, cache_dir: str,  page_id: str, subdir: str = None) -> str:
+    path = get_save_path(filename=filename, session_id=session_id, cache_dir=cache_dir, page_id=page_id, subdir=subdir)
+    return save_to_path(content=content, path=path)
 
 
 def get_load_path(filename: str, session_id: str, cache_dir: str,  page_id: str, subdir: str = None) -> str:

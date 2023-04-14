@@ -1,12 +1,46 @@
 from dataclasses import dataclass
 from enum import Enum
 from typing import Dict
-from undetected_chromedriver import WebElement
+from undetected_chromedriver import WebElement, Chrome
 from selenium.webdriver.common.keys import Keys
-import json
+from sqlalchemy import text
+
+from ..db import DBClient
+from ..model import Action
 
 ACTION_TYPE_KEY = "action_type"
 INPUT_TEXT_KEY = "input_text"
+
+
+# task_id | element_id | new_page_id | action_position | metadata | description
+def new_action(
+    db_client: DBClient,
+    task_id: int,
+    element_id: int,
+    action_spec: "ActionSpec",
+) -> int:
+    with db_client.transaction() as db_session:
+        action = Action(
+            task_id=task_id,
+            element_id=element_id,
+            action_position=0,
+            metadata_=action_spec.to_json(),
+        )
+        db_session.add(action)
+        db_session.commit()
+        return action.id
+    
+
+def update_action_result(db_client: DBClient, action_id: int, new_page_id: int):
+    with db_client.transaction() as db_session:
+        db_session.execute(
+            text("""
+                UPDATE actions
+                SET new_page_id = :new_page_id
+                WHERE id = :action_id
+            """),
+            {"action_id": action_id},
+        )
 
 
 class ElementActionType(Enum):
@@ -40,7 +74,7 @@ class ActionSpec:
             input_text=obj[INPUT_TEXT_KEY],
         )
 
-    def run(self, e: WebElement):
+    def run(self, driver: Chrome, e: WebElement):
         if self.action_type == ElementActionType.CLICK:
             e.click()
         elif self.action_type in [
@@ -48,5 +82,6 @@ class ActionSpec:
             ElementActionType.INPUT_KEYS_ENTER,
         ]:
             e.send_keys(self.input_text)
+            driver.implicitly_wait(1)
             if self.action_type == ElementActionType.INPUT_KEYS_ENTER:
                 e.send_keys(Keys.ENTER)

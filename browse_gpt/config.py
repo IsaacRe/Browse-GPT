@@ -2,8 +2,10 @@ import sys
 from argparse import ArgumentParser, _ArgumentGroup
 from dataclasses import dataclass, fields, asdict
 from typing import ClassVar, Any, List
-from hashlib import md5
+import os
+import os.path
 
+from .util import hash_url
 from .logging import setup_logger, LOG_LEVELS
 
 MIN_CLASS_OVERLAP = 6  # test cases so far min=5, max=28
@@ -68,8 +70,9 @@ class CommonConfig(ConfigBase):
     cache_dir: make_arg("--cache-dir", type=str, default=".cache")
     db_url: make_arg("--db-url", type=str, default="postgresql://root:root@0.0.0.0/browse-gpt-db")
 
-    def post_init(cls, log_level: str, **_: Any):
+    def post_init(self, log_level: str, cache_dir: str, **_: Any):
         setup_logger(log_level)
+        self.cache_dir = os.path.join(os.getcwd(), cache_dir)
 
 
 @dataclass
@@ -81,7 +84,7 @@ class CrawlPageConfig(CommonConfig):
     def post_init(self, url: str, **kwargs):
         super().post_init(**kwargs)
         if not self.site_id:
-            self.site_id = md5(url.split("//")[1].encode("utf-8")).hexdigest()
+            self.site_id = hash_url(url)
 
 
 @dataclass
@@ -107,7 +110,7 @@ class TaskExecutionConfig(ParsePageConfig):
 
 
 @dataclass
-class BrowingSessionConfig(CommonConfig):
+class BrowingSessionConfig(TaskExecutionConfig):
     _args: ClassVar[_ArgumentGroup] = _PARSER.add_argument_group()
 
 
