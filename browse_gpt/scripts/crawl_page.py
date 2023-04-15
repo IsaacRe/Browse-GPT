@@ -1,6 +1,5 @@
 import sys
 from bs4 import BeautifulSoup
-from dataclasses import asdict
 
 from browse_gpt.db import DBClient
 import browse_gpt.model as orm
@@ -30,7 +29,7 @@ def main(config: ParsePageConfig):
 
     # add session and page to db
     with db_client.transaction() as db_session:
-        session = orm.Session(tag=config.session_id, config=asdict(config))
+        session = orm.Session(tag=config.session_id, config=config.asdict())
         db_session.add(session)
         db_session.commit()
 

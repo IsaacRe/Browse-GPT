@@ -1,5 +1,6 @@
 import os
 import os.path
+import time
 import undetected_chromedriver as uc
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
@@ -20,6 +21,15 @@ def start_driver(extension_name: str = None) -> uc.Chrome:
         browser_executable_path=os.getenv("CHROME_PATH"),
         desired_capabilities=dc,
     )
+
+
+def is_ready(driver: uc.Chrome) -> bool:
+    return driver.execute_script('return document.readyState') == 'complete'
+
+
+def wait_until_ready(driver: uc.Chrome, t: float = 0.2):
+    while not is_ready(driver):
+        time.sleep(t)
 
 
 def get_annotator(driver: uc.Chrome) -> "PageAnnotator":

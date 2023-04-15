@@ -1,6 +1,7 @@
 import sys
 from argparse import ArgumentParser, _ArgumentGroup
 from dataclasses import dataclass, fields, asdict
+from enum import Enum
 from typing import ClassVar, Any, List
 import os
 import os.path
@@ -38,6 +39,12 @@ class Argument:
     default: Any
     dest: str
     choices: List[Any]
+
+
+class OverrideOptions(Enum):
+    ALWAYS = 1
+    ON_FAILURE = 2
+    NEVER = 3
 
 
 class ConfigBase:
@@ -102,6 +109,16 @@ class CommonConfig(ConfigBase):
         self.cache_dir = os.path.join(os.getcwd(), cache_dir)
         self.db_client = DBClient(self.db_url)
 
+    def asdict(self):
+        ret_dict = {}
+        for f in fields(self):
+            if f.name not in self._ignore:
+                value = getattr(self, f.name)
+                if isinstance(value, Enum):
+                    value = value.value
+                ret_dict[f.name] = value
+        return ret_dict
+
 
 @dataclass
 class CrawlPageConfig(CommonConfig):
@@ -144,6 +161,11 @@ class BrowingSessionConfig(TaskExecutionConfig):
     _args: ClassVar[_ArgumentGroup] = _PARSER.add_argument_group()
 
     browser_extension: make_arg("--browser-extension", type=str, default="")
+    allow_override: make_arg("--allow-override", type=str, choices=["ALWAYS", "ON_FAILURE", "NEVER"], default="ALWAYS")
+
+    def post_init(self, allow_override: str, **kwargs):
+        super().post_init(**kwargs)
+        self.allow_override = OverrideOptions[allow_override]
 
 
 def _test():

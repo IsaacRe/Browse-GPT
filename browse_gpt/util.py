@@ -3,6 +3,10 @@ from hashlib import md5
 from datetime import datetime, timedelta
 
 
+def query_user_action():
+    return input("Input a description of the action taken to continue (skip input to bypass override)")
+
+
 def hash_url(url: str):
     return md5(url.split("//")[1].encode("utf-8")).hexdigest()
 

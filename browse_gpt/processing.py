@@ -5,13 +5,19 @@ from selenium.webdriver import Chrome
 from selenium.webdriver.common.by import By
 from undetected_chromedriver.webelement import WebElement
 import numpy as np
-from typing import List, Set, Tuple, Dict
+from typing import List, Set, Tuple, Dict, Union
 import logging
 
 from .config import MIN_CLASS_OVERLAP, MIN_NUM_MATCHES
 from .util import timer
 
 logger = logging.getLogger(__name__)
+
+""" TODO
+catch element no longer attached exception in is_live and re-query for driver element at same xpath
+exclude: script
+only keep tags accessible via `//<tag name>` xpath
+"""
 
 INTERACTIVE_ROLES = [
     "button",
@@ -42,6 +48,10 @@ TEXT_INPUT_ELEMENTS = ["input"]
 TEXT_INPUT_ATTRIBUTES = {"role": TEXT_INPUT_ROLES, "placeholder": None}
 
 
+def make_child_xpath(parent_xpath: str, child_tag_name: str, child_tag_idx: int) -> str:
+    return f"{parent_xpath}/{child_tag_name}[{child_tag_idx + 1}]"
+
+
 def _format_css_query(keep_attrs: Dict[str, List[str]] = {}, keep_elems: List[str] = []):
     query = ", ".join(keep_elems)
     attr_constraints = []
@@ -55,18 +65,20 @@ def _format_css_query(keep_attrs: Dict[str, List[str]] = {}, keep_elems: List[st
     return query
 
 
-def is_special(e: WebElement, keep_attrs: Dict[str, List[str]] = {}, keep_elems: List[str] = []):
+def is_special(e: Union[Tag, WebElement], keep_attrs: Dict[str, List[str]] = {}, keep_elems: List[str] = []):
     if isinstance(keep_attrs, list):
         keep_attrs = {attr: None for attr in keep_attrs}
-    if e.tag_name in keep_elems:
+    tag_name = e.name if isinstance(e, Tag) else e.tag_name
+    if tag_name in keep_elems:
         return True
     for a in keep_attrs:
-        if isinstance(keep_attrs, dict):
+        if isinstance(e, Tag):
+            attr_value = e.attrs.get(a)
+        else:
             attr_value = e.get_attribute(a)
-            if attr_value is not None and (keep_attrs[a] is None or keep_attrs[a] == attr_value):
-                return True
-            #if a in e.attrs and (keep_attrs[a] is None or e.attrs[a] in keep_attrs[a]):
-            #    return True
+        if attr_value is not None and (keep_attrs[a] is None or keep_attrs[a] == attr_value):
+            return True
+
     return False
 
 
@@ -79,11 +91,11 @@ def extract_first_interactive_from_outer_html(e: WebElement) -> WebElement:
     )
 
 
-def is_interactive_element(e: WebElement):
+def is_interactive_element(e: Union[Tag, WebElement]):
     return is_special(e=e, keep_attrs=INTERACTIVE_ATTRIBUTES, keep_elems=INTERACTIVE_ELEMENTS)
 
 
-def is_text_input(e: WebElement):
+def is_text_input(e: Union[Tag, WebElement]):
     return is_special(e=e, keep_attrs=TEXT_INPUT_ATTRIBUTES, keep_elems=TEXT_INPUT_ELEMENTS)
 
 
@@ -185,21 +197,19 @@ def recurse_get_classes(s: Tag) -> Set[str]:
     return classes
 
 
-def get_decorated_elem(driver: Chrome, soup: Tag, parent_xpath: str, tag: str, tag_index: int) -> "DecoratedSoup":
+def get_driver_elem(
+    driver: Chrome,
+    parent_xpath: str,
+    tag_name: str,
+    tag_idx: int,
+) -> Tuple[WebElement, str]:
+    xpath = parent_xpath + f'/{tag_name}[{tag_idx + 1}]'
     try:
-        xpath = parent_xpath + f'/{tag}[{tag_index + 1}]'
         driver_elem = driver.find_element(by=By.XPATH, value=xpath)
     except NoSuchElementException:
-        xpath = parent_xpath + f'/*[name()="{tag}"][{tag_index + 1}]'
-        try:
-            driver_elem = driver.find_element(by=By.XPATH, value=xpath)
-        except NoSuchElementException:
-            return None
-
-    a = DecoratedSoup(soup, xpath=xpath, driver_elem=driver_elem)
-    assert isinstance(a, DecoratedSoup)
-    assert a.is_live is not None
-    return a
+        xpath = parent_xpath + f'/*[name()="{tag_name}"][{tag_idx + 1}]'
+        driver_elem = driver.find_element(by=By.XPATH, value=xpath)
+    return driver_elem, xpath
 
 
 def extract_context(s: Tag, attrs: List[str] = ['aria-label', 'placeholder'], all_text: bool = False) -> Tuple[str, Dict[str, str]]:
@@ -229,9 +239,38 @@ def get_current_page_context(driver: Chrome) -> List["DecoratedSoup"]:
     logger.info("Parsing page content...")
     with timer() as t:
         root_elem = BeautifulSoup(driver.page_source).find()
-        ds = get_decorated_elem(driver=driver, soup=root_elem, parent_xpath="/", tag=root_elem.name, tag_index=0)
+        ds = DecoratedSoup(
+            soup=root_elem,
+            tag_name=root_elem.name,
+            tag_idx=0,
+            parent_xpath="/",
+            driver=driver,
+            query_element=True,
+        )
         _, elems, _ = recurse_get_context(driver=driver, ds=ds)
     logger.info(f"Done parsing page content. ({t.seconds()}s)")
+    logger.debug(f"Found {sum([isinstance(e, DecoratedSoupGroup) for e in elems])} same-class groups")
+    return elems
+
+
+def parse_page_source(page_source: str):
+    logger.info("Parsing page content...")
+    with timer() as t:
+        root_elem = BeautifulSoup(page_source).find()
+        ds = DecoratedSoup(
+            soup=root_elem,
+            tag_name=root_elem.name,
+            tag_idx=0,
+            parent_xpath="/",
+        )
+        elems, _ = ds.index_contents()
+
+    # format context for elements
+    for e in elems:
+        e.context = extract_and_format_context(e.soup)
+
+    logger.info(f"Done parsing page content. ({t.seconds()}s)")
+    # TODO add same-class group identification
     logger.debug(f"Found {sum([isinstance(e, DecoratedSoupGroup) for e in elems])} same-class groups")
     return elems
 
@@ -257,7 +296,14 @@ def recurse_get_context(
         if not isinstance(c, NavigableString):
             if c.name not in tag_idxs:
                 tag_idxs[c.name] = 0
-            dc: DecoratedSoup = get_decorated_elem(driver=driver, soup=c, parent_xpath=xpath, tag=c.name, tag_index=tag_idxs[c.name])
+            dc = DecoratedSoup(
+                soup=c,
+                tag_name=c.name,
+                tag_idx=tag_idxs[c.name],
+                parent_xpath=xpath,
+                driver=driver,
+                query_element=True,
+            )
             if dc is None:
                 logger.error(f"Failed to find element for xpath: {xpath}/{c.name}[{tag_idxs[c.name]}]")
                 continue
@@ -296,14 +342,95 @@ def recurse_get_context(
 
 
 class DecoratedSoup:
-    def __init__(self, soup: Tag, xpath: str = '/', driver_elem: WebElement = None):
+    def __init__(
+        self,
+        soup: Tag,
+        tag_name: str,
+        tag_idx: int,
+        parent_xpath: str = '/',
+        driver: Chrome = None,
+        query_element: bool = False,
+    ):
+        self.driver = driver
+        self.parent_xpath = parent_xpath
+        self.tag_name = tag_name
+        self.tag_idx = tag_idx
         self.soup = soup
         self.context = ''
-        self.driver_elem = driver_elem
-        self.xpath = xpath
+        self.driver_elem = None
+        self.xpath = make_child_xpath(
+            parent_xpath=parent_xpath,
+            child_tag_name=tag_name,
+            child_tag_idx=tag_idx,
+        )
+        if query_element:
+            self.query_driver_element()
+
+    def query_driver_element(self, driver: Chrome = None) -> WebElement:
+        if driver is None:
+            driver = self.driver
+        if not driver:
+            raise Exception("Driver is required to access web element for this tag")
+        try:
+            self.driver_elem, self.xpath = get_driver_elem(
+                driver=driver,
+                parent_xpath=self.parent_xpath,
+                tag_name=self.tag_name,
+                tag_idx=self.tag_idx,
+            )
+        except NoSuchElementException:
+            return None
+        return self.driver_elem
         
     def is_live(self) -> bool:
         return self.driver_elem.is_displayed()
+    
+    """Traverse recursively through contents, indexing non-filtered elements as we go.
+    Filtered if ALL of the following apply:
+    - No text content
+    - Not interactive
+    - Not a parent to multiple unfiltered children
+    Returns:
+    - children: list of all DecoratedSoup elements in child content
+    - unwrap: boolean, whether to unwrap the element based on above filtering
+    """
+    def index_contents(self, driver: Chrome = None, query_driver: bool = False) -> Tuple[List["DecoratedSoup"], bool]:
+        tag_idxs = {}
+        all_children = []
+        has_text = False
+        num_children = 0
+
+        for e in self.soup.children:
+            if isinstance(e, Tag):
+                num_children += 1
+                if e not in tag_idxs:
+                    tag_idxs[e.name] = 0
+                ds = DecoratedSoup(
+                    soup=e,
+                    tag_name=e.name,
+                    tag_idx=tag_idxs[e.name],
+                    parent_xpath=self.xpath,
+                    driver=driver,
+                    query_element=query_driver,
+                )
+                if query_driver and ds.driver_elem is None:
+                    logger.warning(f"Failed to find element for xpath: {self.xpath}/{e.name}[{tag_idxs[e.name]}]")
+                    e.extract()
+                    continue
+                children, unwrap = ds.index_contents()
+                all_children += children
+                if unwrap:
+                    ds.soup.unwrap()
+                else:
+                    all_children += [ds]
+            elif isinstance(e, NavigableString):
+                has_text = True
+            else:
+                e.extract()
+
+        # TODO exclude even when parent of multiple children?
+        unwrap_self = not is_interactive_element(self.soup) and not has_text and num_children < 2
+        return all_children, unwrap_self
 
 
 class DecoratedSoupGroup(DecoratedSoup):

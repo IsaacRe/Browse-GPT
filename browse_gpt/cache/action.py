@@ -18,6 +18,7 @@ def new_action(
     task_id: int,
     element_id: int,
     action_spec: "ActionSpec",
+    description: str = None,
 ) -> int:
     with db_client.transaction() as db_session:
         action = Action(
@@ -25,6 +26,7 @@ def new_action(
             element_id=element_id,
             action_position=0,
             metadata_=action_spec.to_json(),
+            description=description,
         )
         db_session.add(action)
         db_session.commit()
@@ -84,4 +86,5 @@ class ActionSpec:
             e.send_keys(self.input_text)
             driver.implicitly_wait(2)
             if self.action_type == ElementActionType.INPUT_KEYS_ENTER:
-                e.send_keys(Keys.ENTER)
+                #e.send_keys(Keys.ENTER) TODO debug causing hang
+                pass

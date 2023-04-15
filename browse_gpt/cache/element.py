@@ -76,7 +76,7 @@ def get_filtered_elements(db_client: DBClient, task_id: int, page_id: int) -> Li
     with db_client.transaction() as db_session:
         return db_session.execute(
             text("""
-                SELECT elements.id, xpath
+                SELECT elements.id, outer_html, xpath
                 FROM elements
                 JOIN filtered_elements ON element_id = elements.id
                 WHERE
