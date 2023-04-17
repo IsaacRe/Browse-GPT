@@ -1,0 +1,21 @@
+{
+  "name": "Browser Action Forwarder",
+  "description": "Base Level Extension",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": [
+    "scripting"
+  ],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "hello_extensions.png",
+    "default_title": "Click Me"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["popup.js", "content_script.js"]
+    }
+  ]
+}
