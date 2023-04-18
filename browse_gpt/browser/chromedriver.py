@@ -4,16 +4,16 @@ import undetected_chromedriver as uc
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 EXTENSION_DIR = "chrome-extension"
-EXTENSION_NAME = "browser-action-forwarder"
 
 
-def start_driver() -> uc.Chrome:
+def start_driver(extension_name: str = None) -> uc.Chrome:
     chrome_options = uc.ChromeOptions()
     dc = DesiredCapabilities().CHROME
     dc["pageLoadStrategy"] = "none"
-    ext_path = os.path.join(os.getcwd(), EXTENSION_DIR, EXTENSION_NAME)
-    chrome_options.add_argument(f"--load-extension={ext_path}")
-    chrome_options.add_argument(f"--disable-web-security")  # allow cross-origin request to our server
+    if extension_name:
+        ext_path = os.path.join(os.getcwd(), EXTENSION_DIR, extension_name)
+        chrome_options.add_argument(f"--load-extension={ext_path}")
+        chrome_options.add_argument(f"--disable-web-security")  # allow cross-origin request to our server
     return uc.Chrome(
         options=chrome_options,
         driver_executable_path=os.getenv("CHROMEDRIVER_PATH"),

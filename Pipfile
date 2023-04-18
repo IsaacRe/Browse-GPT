@@ -18,6 +18,7 @@ sqlalchemy = "*"
 alembic = "*"
 psycopg2-binary = "*"
 click = "*"
+flask = "*"
 
 [dev-packages]
 

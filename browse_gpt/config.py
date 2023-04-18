@@ -7,9 +7,11 @@ import os.path
 
 from .util import hash_url
 from .logging import setup_logger, LOG_LEVELS
+from .db import DBClient
 
 MIN_CLASS_OVERLAP = 6  # test cases so far min=5, max=28
 MIN_NUM_MATCHES = 3
+ENV_VAR_FLAG_PREFIX = "ACT_APP"
 
 _PARSER = ArgumentParser()
 
@@ -24,6 +26,11 @@ def make_arg(*name_or_flags, type: type = None, default: Any = None, dest: str =
     )
 
 
+def get_env_for_flag(flag: str) -> str:
+    varname = "_".join([ENV_VAR_FLAG_PREFIX, flag.upper().strip("-").replace("-", "_")])
+    return os.getenv(varname)
+
+
 @dataclass
 class Argument:
     name_or_flags: List[str]
@@ -35,23 +42,39 @@ class Argument:
 
 class ConfigBase:
     _args: ClassVar[_ArgumentGroup] = None
+    _ignore: ClassVar[List[str]] = []
 
     @classmethod
     def _add_args(cls):
         for f in fields(cls):
-            arg: Argument = f.type
-            arg_params = {k: v for k, v in asdict(arg).items() if k != "name_or_flags"}
-            cls._args.add_argument(*arg.name_or_flags, **arg_params)
+            if f.name not in cls._ignore:
+                arg: Argument = f.type
+                arg_params = {k: v for k, v in asdict(arg).items() if k != "name_or_flags"}
+                
+                # check if flag has been set with environment variable
+                env_value = get_env_for_flag(arg.name_or_flags[0])
+                if env_value is not None:
+                    ArgType = arg_params.get("type")
+                    if ArgType is not None:
+                        env_value = ArgType(env_value)
+                    arg_params["default"] = env_value
+
+                cls._args.add_argument(*arg.name_or_flags, **arg_params)
 
     @classmethod
-    def parse_args(cls) -> "ConfigBase":
-        #cls._add_args()
+    def parse_args(cls, allow_unknown: bool = False) -> "ConfigBase":
         # initialize config with default values
-        cfg = cls(**{f.name: f.type.default for f in fields(cls)})
+        cfg = cls(
+            **{f.name: None if f.name in cls._ignore else f.type.default for f in fields(cls)}
+        )
 
         # add parsed arguments
         cls._add_args()
-        parsed_args = _PARSER.parse_args().__dict__
+        if allow_unknown:
+            parsed_args, _ = _PARSER.parse_known_args()
+            parsed_args = parsed_args.__dict__
+        else:
+            parsed_args = _PARSER.parse_args().__dict__
         for a, v in parsed_args.items():
             setattr(cfg, a, v)
 
@@ -65,16 +88,19 @@ class ConfigBase:
 @dataclass
 class CommonConfig(ConfigBase):
     _args: ClassVar[_ArgumentGroup] = _PARSER.add_argument_group()
+    _ignore: ClassVar[List[str]] = ["db_client"]
 
     log_level: make_arg("--log-level", type=str, choices=list(LOG_LEVELS), default="info")
     url: make_arg("--url", type=str)
     session_id: make_arg("--session-id", type=str, default="1")
     cache_dir: make_arg("--cache-dir", type=str, default=".cache")
     db_url: make_arg("--db-url", type=str, default="postgresql://root:root@0.0.0.0/browse-gpt-db")
+    db_client: DBClient
 
     def post_init(self, log_level: str, cache_dir: str, **_: Any):
         setup_logger(log_level)
         self.cache_dir = os.path.join(os.getcwd(), cache_dir)
+        self.db_client = DBClient(self.db_url)
 
 
 @dataclass
@@ -116,6 +142,8 @@ class TaskExecutionConfig(ParsePageConfig):
 @dataclass
 class BrowingSessionConfig(TaskExecutionConfig):
     _args: ClassVar[_ArgumentGroup] = _PARSER.add_argument_group()
+
+    browser_extension: make_arg("--browser-extension", type=str, default="")
 
 
 def _test():

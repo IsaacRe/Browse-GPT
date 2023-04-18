@@ -6,9 +6,9 @@ from .util import save_to_cache, PAGE_HTML_FILENAME
 
 
 # session_id | url | url_hash | content_path
-def new_page(db_client: DBClient, session_id: int, url: str, content: str, config: CommonConfig) -> int:
+def new_page(config: CommonConfig, session_id: int, url: str, content: str) -> int:
     url_hash = hash_url(url)
-    with db_client.transaction() as db_session:
+    with config.db_client.transaction() as db_session:
         session = db_session.query(Page) \
                     .filter(Page.session_id == session_id) \
                     .filter(Page.url_hash == url_hash) \
